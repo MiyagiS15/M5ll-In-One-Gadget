@@ -200,7 +200,7 @@ void AppControl::controlApplication()
 
             switch (getAction()) {
             case ENTRY:
-           clearDisplay()；
+          
 
            displayMenuInit();//メニュー画面の呼び出し
            
