@@ -13,7 +13,7 @@ void MdLcd::displayJpgImageCoordinate(const char* path, uint16_t x, uint16_t y)
 
 void MdLcd::clearDisplay()
 {
-    M5.Lcd.clear();
+    M5.Lcd.clear(WHITE);
 }
 
 void MdLcd::fillBackgroundWhite()

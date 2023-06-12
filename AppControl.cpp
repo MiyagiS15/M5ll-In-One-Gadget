@@ -2,10 +2,11 @@
 //2.コミット字のコメントはどういう意図の変更を行ったかをコメントする
 //3.定期的にプルを行う。
 //4.コンフリクトを起こさないようにする。
-
+#include "M5All-In-One-Gadget.h"
 #include "AppControl.h"
 #include <Arduino.h>
 #include <M5Stack.h>
+#include "MdLcd.h"
 
 MdLcd mlcd;
 MdWBGTMonitor mwbgt;
@@ -120,7 +121,15 @@ void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
 }
 
 void AppControl::displayWBGTInit()
-{
+{   
+    mlcd.displayJpgImageCoordinate(MENU_WBGT_FOCUS_IMG_PATH,MENU_WBGT_X_CRD,MENU_WBGT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH,MENU_MUSIC_X_CRD,MENU_MUSIC_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH,MENU_MEASURE_X_CRD,MENU_MEASURE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH ,MENU_DATE_X_CRD,MENU_DATE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_UP_IMG_PATH ,COMMON_BUTTON_UP_X_CRD,COMMON_BUTTON_UP_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DECIDE_IMG_PATH ,COMMON_BUTTON_DECIDE_X_CRD,COMMON_BUTTON_DECIDE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DOWN_IMG_PATH ,COMMON_BUTTON_DOWN_X_CRD,COMMON_BUTTON_DOWN_Y_CRD);
+
 }
 
 void AppControl::displayTempHumiIndex()
@@ -129,6 +138,13 @@ void AppControl::displayTempHumiIndex()
 
 void AppControl::displayMusicInit()
 {
+     mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH,MENU_WBGT_X_CRD,MENU_WBGT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_MUSIC_FOCUS_IMG_PATH,MENU_MUSIC_X_CRD,MENU_MUSIC_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH,MENU_MEASURE_X_CRD,MENU_MEASURE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH ,MENU_DATE_X_CRD,MENU_DATE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_UP_IMG_PATH ,COMMON_BUTTON_UP_X_CRD,COMMON_BUTTON_UP_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DECIDE_IMG_PATH ,COMMON_BUTTON_DECIDE_X_CRD,COMMON_BUTTON_DECIDE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DOWN_IMG_PATH ,COMMON_BUTTON_DOWN_X_CRD,COMMON_BUTTON_DOWN_Y_CRD);
 }
 
 void AppControl::displayMusicStop()
@@ -177,17 +193,19 @@ void AppControl::controlApplication()
                 ** この関数の中身はまだ何もないので、この関数にタイトル画面表示処理を書いてみよう。
                 */ 
              displayTitleInit();//タイトル画面の呼び出し
-          
-         setStateMachine(MENU,ENTRY);
- 
-             //setStateAction(MENU, ENTRY);
-             setBtnAllFlgFalse();
+             setStateMachine(TITLE,DO);
                 break;
 
+
             case DO:
+            if (m_flag_btnA_is_pressed || m_flag_btnB_is_pressed || m_flag_btnC_is_pressed) {
+            mlcd.clearDisplay();	
+            setStateMachine(MENU,ENTRY);
+            }         
                 break;
 
             case EXIT:
+            setStateMachine(TITLE,ENTRY);
                 break;
 
             default:
@@ -196,18 +214,28 @@ void AppControl::controlApplication()
 
             break;
 
+
+
         case MENU:
 
             switch (getAction()) {
+            
             case ENTRY:
-          
-
-           displayMenuInit();//メニュー画面の呼び出し
-           
+             displayMenuInit();//メニュー画面の呼び出し
+             setStateMachine(MENU,DO);
                 break;
 
             case DO:
+              if(m_flag_btnC_is_pressed){
+                displayWBGTInit();
+                if(m_flag_btnC_is_pressed){
+                    setStateMachine(MUSIC_STOP,ENTRY);
+                }
+             }
+             else
+             setStateMachine(MENU,ENTRY);
 
+             
                 break;
 
             case EXIT:
@@ -240,6 +268,7 @@ void AppControl::controlApplication()
         case MUSIC_STOP:
             switch (getAction()) {
             case ENTRY:
+            displayMusicInit();
                 break;
 
             case DO:
