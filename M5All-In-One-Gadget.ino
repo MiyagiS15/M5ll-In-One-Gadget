@@ -9,28 +9,28 @@ AppControl apc;//AppControlクラスをインスタンス化
 // BUTTON A（左） の割込み関数
 void buttonA_isr()  
 {
-    Serial.println("A interrupt : State[" + String(apc.getState()) + "] Action[" + String(apc.getAction()) + "]");//
+  //  Serial.println("A interrupt : State[" + String(apc.getState()) + "] Action[" + String(apc.getAction()) + "]");//
     apc.setBtnAFlg(true);//AppControl.cppのvoid AppControl::setBtnAFlg(bool flg)に引数trueを渡してメンバ m_flag_btnA_is_pressed = flg;をtrue（ボタンが押された状態）にしている。
 }
 
 // BUTTON B（真ん中） の割込み関数
 void buttonB_isr()
 {
-    Serial.println("B interrupt : State[" + String(apc.getState()) + "] Action[" + String(apc.getAction()) + "]");
+   // Serial.println("B interrupt : State[" + String(apc.getState()) + "] Action[" + String(apc.getAction()) + "]");
     apc.setBtnBFlg(true);
 }
 
 // BUTTON C（右） の割込み関数
 void buttonC_isr()
 {
-    Serial.println("C interrupt : State[" + String(apc.getState()) + "] Action[" + String(apc.getAction()) + "]");
+    //Serial.println("C interrupt : State[" + String(apc.getState()) + "] Action[" + String(apc.getAction()) + "]");
     apc.setBtnCFlg(true);
 }
 
 void setup()
 {
     M5.begin();
-
+    Serial.begin(115200);
     // 割込みピンをINPUTに設定
     pinMode(digitalPinToInterrupt(BTN_A_GPIO), INPUT);
     pinMode(digitalPinToInterrupt(BTN_B_GPIO), INPUT);

@@ -128,7 +128,20 @@
 #define  COMMON_BUTTON_DECIDE_Y_CRD 200
 #define COMMON_BUTTON_DOWN_X_CRD 240
 // Measure jpg image coordinate
-
+#define MENU_WBGT_X_CRD 0
+#define MENU_WBGT_Y_CRD 0
+#define MENU_MUSIC_X_CRD 0
+#define MENU_MUSIC_Y_CRD 50
+#define MENU_MEASURE_FOCUS_X_CRD 0
+#define MENU_MEASURE_FOCUS_Y_CRD 100
+#define MENU_DATE_X_CRD 0 
+#define MENU_DATE_Y_CRD  150
+#define COMMON_BUTTON_UP_X_CRD 0
+#define COMMON_BUTTON_UP_Y_CRD 200
+#define  COMMON_BUTTON_DECIDE_X_CRD 120
+#define  COMMON_BUTTON_DECIDE_Y_CRD 200
+#define COMMON_BUTTON_DOWN_X_CRD 240
+#define COMMON_BUTTON_DOWN_Y_CRD 200
 // Date jpg image coordinate
 
 typedef enum {

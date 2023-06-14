@@ -118,6 +118,7 @@ void AppControl::displayMenuInit()
 
 void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
 {
+ 
 }
 
 void AppControl::displayWBGTInit()
@@ -138,7 +139,7 @@ void AppControl::displayTempHumiIndex()
 
 void AppControl::displayMusicInit()
 {
-     mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH,MENU_WBGT_X_CRD,MENU_WBGT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH,MENU_WBGT_X_CRD,MENU_WBGT_Y_CRD);
     mlcd.displayJpgImageCoordinate(MENU_MUSIC_FOCUS_IMG_PATH,MENU_MUSIC_X_CRD,MENU_MUSIC_Y_CRD);
     mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH,MENU_MEASURE_X_CRD,MENU_MEASURE_Y_CRD);
     mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH ,MENU_DATE_X_CRD,MENU_DATE_Y_CRD);
@@ -164,7 +165,14 @@ void AppControl::displayMusicPlay()
 }
 
 void AppControl::displayMeasureInit()
-{
+{   
+    mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH,MENU_WBGT_X_CRD,MENU_WBGT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH,MENU_MUSIC_X_CRD,MENU_MUSIC_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_MEASURE_FOCUS_IMG_PATH,MENU_MEASURE_X_CRD,MENU_MEASURE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH ,MENU_DATE_X_CRD,MENU_DATE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_UP_IMG_PATH ,COMMON_BUTTON_UP_X_CRD,COMMON_BUTTON_UP_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DECIDE_IMG_PATH ,COMMON_BUTTON_DECIDE_X_CRD,COMMON_BUTTON_DECIDE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DOWN_IMG_PATH ,COMMON_BUTTON_DOWN_X_CRD,COMMON_BUTTON_DOWN_Y_CRD);
 }
 
 void AppControl::displayMeasureDistance()
@@ -173,6 +181,13 @@ void AppControl::displayMeasureDistance()
 
 void AppControl::displayDateInit()
 {
+    mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH,MENU_WBGT_X_CRD,MENU_WBGT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH,MENU_MUSIC_X_CRD,MENU_MUSIC_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH,MENU_MEASURE_X_CRD,MENU_MEASURE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MENU_DATE_FOCUS_IMG_PATH ,MENU_DATE_X_CRD,MENU_DATE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_UP_IMG_PATH ,COMMON_BUTTON_UP_X_CRD,COMMON_BUTTON_UP_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DECIDE_IMG_PATH ,COMMON_BUTTON_DECIDE_X_CRD,COMMON_BUTTON_DECIDE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DOWN_IMG_PATH ,COMMON_BUTTON_DOWN_X_CRD,COMMON_BUTTON_DOWN_Y_CRD);
 }
 
 void AppControl::displayDateUpdate()
@@ -181,6 +196,8 @@ void AppControl::displayDateUpdate()
 
 void AppControl::controlApplication()
 {
+
+    mmplay.init();
     while (1) {//while(1)によりtrueになっているので無限ループになる
 
         switch (getState()) {
@@ -192,21 +209,23 @@ void AppControl::controlApplication()
                 ** タイトル画面表示の関数はdisplayTitleInit()である。
                 ** この関数の中身はまだ何もないので、この関数にタイトル画面表示処理を書いてみよう。
                 */ 
-             displayTitleInit();//タイトル画面の呼び出し
-             setStateMachine(TITLE,DO);
-                break;
+                displayTitleInit();//タイトル画面の呼び出し
+                setStateMachine(TITLE,DO);
+                //if(setBtnAllFlgFalse(true))
+                 if (m_flag_btnA_is_pressed || m_flag_btnB_is_pressed || m_flag_btnC_is_pressed) { //ボタンを押した際にMENU画面に移行
+                    mlcd.clearDisplay();	
+                    setStateMachine(MENU,ENTRY);
+                }
+            break;
 
 
             case DO:
-            if (m_flag_btnA_is_pressed || m_flag_btnB_is_pressed || m_flag_btnC_is_pressed) {
-            mlcd.clearDisplay();	
-            setStateMachine(MENU,ENTRY);
-            }         
-                break;
+                setStateMachine(TITLE,EXIT);
+            break;
 
             case EXIT:
-            setStateMachine(TITLE,ENTRY);
-                break;
+                setStateMachine(TITLE,ENTRY);
+            break;
 
             default:
                 break;
@@ -221,30 +240,125 @@ void AppControl::controlApplication()
             switch (getAction()) {
             
             case ENTRY:
-             displayMenuInit();//メニュー画面の呼び出し
-             setStateMachine(MENU,DO);
-                break;
+               mlcd.clearDisplay();	
+               displayMenuInit();//メニュー画面の呼び出し
+                setStateMachine(MENU,DO);
+            break;
+
+
 
             case DO:
-              if(m_flag_btnC_is_pressed){
-                displayWBGTInit();
-                if(m_flag_btnC_is_pressed){
-                    setStateMachine(MUSIC_STOP,ENTRY);
-                }
-             }
-             else
-             setStateMachine(MENU,ENTRY);
+               switch(getFocusState()){
+           
 
-             
-                break;
+                  case MENU_WBGT:
+                      displayWBGTInit();
+                       Serial.println("1");
+                         if(m_flag_btnC_is_pressed==true){
+                        setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
+                      Serial.println("a");
+                      setFocusState(MENU_MUSIC);//現在のフォーカス状態の設定
+                      focusChangeImg(MENU_WBGT,MENU_MUSIC);
+                      }
+                      else if(m_flag_btnA_is_pressed==true){
+                        setBtnAllFlgFalse();
+                       Serial.println("A");
+                       setFocusState(MENU_DATE);
+                      focusChangeImg(MENU_WBGT, MENU_DATE);
+                      }
+                      else  
+                       setFocusState(MENU_WBGT);
+                      
+                      focusChangeImg(MENU_WBGT, MENU_WBGT);
+                    break;
+
+                    case MENU_MUSIC:
+                      displayMusicInit();
+                       Serial.println("2");
+
+                       if(m_flag_btnC_is_pressed==true){
+                      setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
+                      Serial.println("b");
+                      setFocusState(MENU_MEASURE);//現在のフォーカス状態の設定
+                      focusChangeImg(MENU_MUSIC,MENU_MEASURE);
+                      }
+
+
+                      else if(m_flag_btnA_is_pressed==true){
+                        setBtnAllFlgFalse();
+                        Serial.println("B");
+                        setFocusState(MENU_WBGT);
+                      focusChangeImg(MENU_MUSIC, MENU_WBGT);
+                    }
+
+
+
+                    else
+                      setFocusState(MENU_MUSIC);
+                    focusChangeImg(MENU_MUSIC,MENU_MUSIC);
+
+                    break;
+                    
+
+
+
+
+                    case MENU_MEASURE:
+                      displayMeasureInit();
+                       Serial.println("3");
+                         if(m_flag_btnC_is_pressed==true){
+                       setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
+                      Serial.println("c");
+                      setFocusState(MENU_DATE);//現在のフォーカス状態の設定
+                      focusChangeImg(MENU_MEASURE,MENU_DATE);
+                      }
+                     
+                      else if(m_flag_btnA_is_pressed==true){
+                        setBtnAllFlgFalse();
+                        Serial.println("C");
+                        setFocusState(MENU_MUSIC);
+                      focusChangeImg(MENU_MEASURE, MENU_MUSIC);
+                    }
+                      else
+                       setFocusState(MENU_MEASURE);
+                      focusChangeImg(MENU_MEASURE, MENU_MEASURE);
+                    break;
+
+
+                  case MENU_DATE:{}
+                      displayDateInit();
+                       Serial.println("4");
+                     if(m_flag_btnC_is_pressed==true){
+                       setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
+                      Serial.println("d");
+                      setFocusState(MENU_WBGT);//現在のフォーカス状態の設定
+                      focusChangeImg(MENU_DATE,MENU_WBGT);
+                      }
+                       
+                      else if(m_flag_btnA_is_pressed==true){
+                        setBtnAllFlgFalse();
+                        Serial.println("D");
+                        setFocusState(MENU_MEASURE);
+                      focusChangeImg(MENU_DATE, MENU_MEASURE);
+                    }
+                      else
+                       setFocusState(MENU_DATE);
+                      focusChangeImg(MENU_DATE, MENU_DATE);
+                    break;
+
+                  default:
+                  break;
+                }    
+            break;
 
             case EXIT:
-
             default:
                 break;
             }
-
             break;
+
+
+
 
         case WBGT:
 
@@ -265,10 +379,17 @@ void AppControl::controlApplication()
 
             break;
 
+
+
+
+
+
+
+
         case MUSIC_STOP:
             switch (getAction()) {
             case ENTRY:
-            displayMusicInit();
+         
                 break;
 
             case DO:
