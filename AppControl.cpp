@@ -118,18 +118,42 @@ void AppControl::displayMenuInit()
 
 void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
 {
+    switch(current_state){
+    case MENU_WBGT:
+     mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH,MENU_WBGT_FOCUS_X_CRD,MENU_WBGT_FOCUS_Y_CRD);
+  
+    break;
+    case MENU_MUSIC:
+     mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH,MENU_MUSIC_FOCUS_X_CRD,MENU_MUSIC_FOCUS_Y_CRD);	
+    break;
+    case MENU_MEASURE:
+     mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH,MENU_MEASURE_FOCUS_X_CRD,MENU_MEASURE_FOCUS_Y_CRD);	
+    break;
+    case MENU_DATE:
+     mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH,MENU_DATE_FOCUS_X_CRD,MENU_DATE_FOCUS_Y_CRD);	
+    break;
+    }
+
+    switch(next_state){
+    case MENU_WBGT:
+     mlcd.displayJpgImageCoordinate(MENU_WBGT_FOCUS_IMG_PATH,MENU_WBGT_FOCUS_X_CRD,MENU_WBGT_FOCUS_Y_CRD);
+    break;
+    case MENU_MUSIC:
+     mlcd.displayJpgImageCoordinate(MENU_MUSIC_FOCUS_IMG_PATH,MENU_MUSIC_FOCUS_X_CRD,MENU_MUSIC_FOCUS_Y_CRD);	
+    break;
+    case MENU_MEASURE:
+     mlcd.displayJpgImageCoordinate(MENU_MEASURE_FOCUS_IMG_PATH,MENU_MEASURE_FOCUS_X_CRD,MENU_MEASURE_FOCUS_Y_CRD);	
+    break;
+    case MENU_DATE:
+     mlcd.displayJpgImageCoordinate(MENU_DATE_FOCUS_IMG_PATH,MENU_DATE_FOCUS_X_CRD,MENU_DATE_FOCUS_Y_CRD);	
+    break;
+    }
  
 }
 
 void AppControl::displayWBGTInit()
 {   
-    mlcd.displayJpgImageCoordinate(MENU_WBGT_FOCUS_IMG_PATH,MENU_WBGT_X_CRD,MENU_WBGT_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH,MENU_MUSIC_X_CRD,MENU_MUSIC_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH,MENU_MEASURE_X_CRD,MENU_MEASURE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH ,MENU_DATE_X_CRD,MENU_DATE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_UP_IMG_PATH ,COMMON_BUTTON_UP_X_CRD,COMMON_BUTTON_UP_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DECIDE_IMG_PATH ,COMMON_BUTTON_DECIDE_X_CRD,COMMON_BUTTON_DECIDE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DOWN_IMG_PATH ,COMMON_BUTTON_DOWN_X_CRD,COMMON_BUTTON_DOWN_Y_CRD);
+    
 
 }
 
@@ -139,14 +163,7 @@ void AppControl::displayTempHumiIndex()
 
 void AppControl::displayMusicInit()
 {
-    mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH,MENU_WBGT_X_CRD,MENU_WBGT_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_MUSIC_FOCUS_IMG_PATH,MENU_MUSIC_X_CRD,MENU_MUSIC_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH,MENU_MEASURE_X_CRD,MENU_MEASURE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH ,MENU_DATE_X_CRD,MENU_DATE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_UP_IMG_PATH ,COMMON_BUTTON_UP_X_CRD,COMMON_BUTTON_UP_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DECIDE_IMG_PATH ,COMMON_BUTTON_DECIDE_X_CRD,COMMON_BUTTON_DECIDE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DOWN_IMG_PATH ,COMMON_BUTTON_DOWN_X_CRD,COMMON_BUTTON_DOWN_Y_CRD);
-}
+ }
 
 void AppControl::displayMusicStop()
 {
@@ -166,13 +183,6 @@ void AppControl::displayMusicPlay()
 
 void AppControl::displayMeasureInit()
 {   
-    mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH,MENU_WBGT_X_CRD,MENU_WBGT_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH,MENU_MUSIC_X_CRD,MENU_MUSIC_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_MEASURE_FOCUS_IMG_PATH,MENU_MEASURE_X_CRD,MENU_MEASURE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH ,MENU_DATE_X_CRD,MENU_DATE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_UP_IMG_PATH ,COMMON_BUTTON_UP_X_CRD,COMMON_BUTTON_UP_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DECIDE_IMG_PATH ,COMMON_BUTTON_DECIDE_X_CRD,COMMON_BUTTON_DECIDE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DOWN_IMG_PATH ,COMMON_BUTTON_DOWN_X_CRD,COMMON_BUTTON_DOWN_Y_CRD);
 }
 
 void AppControl::displayMeasureDistance()
@@ -181,13 +191,7 @@ void AppControl::displayMeasureDistance()
 
 void AppControl::displayDateInit()
 {
-    mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH,MENU_WBGT_X_CRD,MENU_WBGT_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH,MENU_MUSIC_X_CRD,MENU_MUSIC_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH,MENU_MEASURE_X_CRD,MENU_MEASURE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(MENU_DATE_FOCUS_IMG_PATH ,MENU_DATE_X_CRD,MENU_DATE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_UP_IMG_PATH ,COMMON_BUTTON_UP_X_CRD,COMMON_BUTTON_UP_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DECIDE_IMG_PATH ,COMMON_BUTTON_DECIDE_X_CRD,COMMON_BUTTON_DECIDE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DOWN_IMG_PATH ,COMMON_BUTTON_DOWN_X_CRD,COMMON_BUTTON_DOWN_Y_CRD);
+   
 }
 
 void AppControl::displayDateUpdate()
@@ -213,7 +217,7 @@ void AppControl::controlApplication()
                 setStateMachine(TITLE,DO);
                 //if(setBtnAllFlgFalse(true))
                  if (m_flag_btnA_is_pressed || m_flag_btnB_is_pressed || m_flag_btnC_is_pressed) { //ボタンを押した際にMENU画面に移行
-                    mlcd.clearDisplay();	
+                    mlcd.fillBackgroundWhite();	
                     setStateMachine(MENU,ENTRY);
                 }
             break;
@@ -240,7 +244,7 @@ void AppControl::controlApplication()
             switch (getAction()) {
             
             case ENTRY:
-               mlcd.clearDisplay();	
+               mlcd.fillBackgroundWhite();	
                displayMenuInit();//メニュー画面の呼び出し
                 setStateMachine(MENU,DO);
             break;
@@ -248,38 +252,46 @@ void AppControl::controlApplication()
 
 
             case DO:
-               switch(getFocusState()){
-           
+   switch(getFocusState()){
+
 
                   case MENU_WBGT:
-                      displayWBGTInit();
+                      
                        Serial.println("1");
+                       setFocusState(MENU_WBGT);
                          if(m_flag_btnC_is_pressed==true){
-                        setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
+                       setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
                       Serial.println("a");
-                      setFocusState(MENU_MUSIC);//現在のフォーカス状態の設定
+                         
+                           displayMenuInit();
+                             getFocusState();
+                      setFocusState(MENU_WBGT);//現在のフォーカス状態の設定
+                     
                       focusChangeImg(MENU_WBGT,MENU_MUSIC);
                       }
                       else if(m_flag_btnA_is_pressed==true){
                         setBtnAllFlgFalse();
                        Serial.println("A");
-                       setFocusState(MENU_DATE);
+                           displayMenuInit();
+                       setFocusState(MENU_WBGT);
+                        displayMenuInit();
                       focusChangeImg(MENU_WBGT, MENU_DATE);
                       }
                       else  
                        setFocusState(MENU_WBGT);
-                      
-                      focusChangeImg(MENU_WBGT, MENU_WBGT);
+  Serial.println("@");
+                      focusChangeImg(MENU_WBGT, MENU_MUSIC);
                     break;
 
                     case MENU_MUSIC:
-                      displayMusicInit();
                        Serial.println("2");
 
                        if(m_flag_btnC_is_pressed==true){
                       setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
                       Serial.println("b");
+                           displayMenuInit();	
                       setFocusState(MENU_MEASURE);//現在のフォーカス状態の設定
+                       getFocusState();
                       focusChangeImg(MENU_MUSIC,MENU_MEASURE);
                       }
 
@@ -287,35 +299,38 @@ void AppControl::controlApplication()
                       else if(m_flag_btnA_is_pressed==true){
                         setBtnAllFlgFalse();
                         Serial.println("B");
-                        setFocusState(MENU_WBGT);
+                           displayMenuInit();
+                        setFocusState(MENU_MUSIC);
                       focusChangeImg(MENU_MUSIC, MENU_WBGT);
                     }
 
 
 
                     else
-                      setFocusState(MENU_MUSIC);
+                      setFocusState(MENU_WBGT);
                     focusChangeImg(MENU_MUSIC,MENU_MUSIC);
 
                     break;
-                    
+
 
 
 
 
                     case MENU_MEASURE:
-                      displayMeasureInit();
+                 
                        Serial.println("3");
                          if(m_flag_btnC_is_pressed==true){
                        setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
-                      Serial.println("c");
+                      Serial.println("c");  
+                           displayMenuInit();	
                       setFocusState(MENU_DATE);//現在のフォーカス状態の設定
                       focusChangeImg(MENU_MEASURE,MENU_DATE);
                       }
-                     
+
                       else if(m_flag_btnA_is_pressed==true){
                         setBtnAllFlgFalse();
                         Serial.println("C");
+                           displayMenuInit();
                         setFocusState(MENU_MUSIC);
                       focusChangeImg(MENU_MEASURE, MENU_MUSIC);
                     }
@@ -331,13 +346,15 @@ void AppControl::controlApplication()
                      if(m_flag_btnC_is_pressed==true){
                        setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
                       Serial.println("d");
+                           displayMenuInit();	
                       setFocusState(MENU_WBGT);//現在のフォーカス状態の設定
                       focusChangeImg(MENU_DATE,MENU_WBGT);
                       }
-                       
+
                       else if(m_flag_btnA_is_pressed==true){
                         setBtnAllFlgFalse();
                         Serial.println("D");
+                           displayMenuInit();
                         setFocusState(MENU_MEASURE);
                       focusChangeImg(MENU_DATE, MENU_MEASURE);
                     }
@@ -350,6 +367,7 @@ void AppControl::controlApplication()
                   break;
                 }    
             break;
+
 
             case EXIT:
             default:
