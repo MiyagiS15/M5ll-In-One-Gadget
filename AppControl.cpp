@@ -120,32 +120,36 @@ void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
 {
     switch(current_state){
     case MENU_WBGT:
-     mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH,MENU_WBGT_FOCUS_X_CRD,MENU_WBGT_FOCUS_Y_CRD);
-  
+     mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH,MENU_WBGT_X_CRD,MENU_WBGT_Y_CRD);
     break;
     case MENU_MUSIC:
-     mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH,MENU_MUSIC_FOCUS_X_CRD,MENU_MUSIC_FOCUS_Y_CRD);	
+     mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH,MENU_MUSIC_X_CRD,MENU_MUSIC_Y_CRD);	
     break;
     case MENU_MEASURE:
-     mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH,MENU_MEASURE_FOCUS_X_CRD,MENU_MEASURE_FOCUS_Y_CRD);	
+     mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH,MENU_MEASURE_X_CRD,MENU_MEASURE_Y_CRD);	
     break;
     case MENU_DATE:
-     mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH,MENU_DATE_FOCUS_X_CRD,MENU_DATE_FOCUS_Y_CRD);	
+     mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH,MENU_DATE_X_CRD,MENU_DATE_Y_CRD);	
     break;
     }
 
     switch(next_state){
     case MENU_WBGT:
      mlcd.displayJpgImageCoordinate(MENU_WBGT_FOCUS_IMG_PATH,MENU_WBGT_FOCUS_X_CRD,MENU_WBGT_FOCUS_Y_CRD);
-    break;
+    
+     break;
     case MENU_MUSIC:
+    
      mlcd.displayJpgImageCoordinate(MENU_MUSIC_FOCUS_IMG_PATH,MENU_MUSIC_FOCUS_X_CRD,MENU_MUSIC_FOCUS_Y_CRD);	
+    
     break;
     case MENU_MEASURE:
      mlcd.displayJpgImageCoordinate(MENU_MEASURE_FOCUS_IMG_PATH,MENU_MEASURE_FOCUS_X_CRD,MENU_MEASURE_FOCUS_Y_CRD);	
+    
     break;
     case MENU_DATE:
      mlcd.displayJpgImageCoordinate(MENU_DATE_FOCUS_IMG_PATH,MENU_DATE_FOCUS_X_CRD,MENU_DATE_FOCUS_Y_CRD);	
+    
     break;
     }
  
@@ -154,7 +158,12 @@ void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
 void AppControl::displayWBGTInit()
 {   
     
-
+ mlcd.displayJpgImageCoordinate(WBGT_SAFE_IMG_PATH,WBGT_SAFE_X_CRD,WBGT_SAFE_Y_CRD);
+ mlcd.displayJpgImageCoordinate(WBGT_TEMPERATURE_IMG_PATH,WBGT_TEMPERATURE_X_CRD,WBGT_TEMPERATURE_Y_CRD);
+ mlcd.displayJpgImageCoordinate(WBGT_HUMIDITY_IMG_PATH,WBGT_HUMIDITY_X_CRD,WBGT_HUMIDITY_Y_CRD);
+ mlcd.displayJpgImageCoordinate(WBGT_DEGREE_IMG_PATH,WBGT_DEGREE_X_CRD,WBGT_DEGREE_Y_CRD);
+ mlcd.displayJpgImageCoordinate(WBGT_PERCENT_IMG_PATH,WBGT_PERCENT_X_CRD,WBGT_PERCENT_Y_CRD);
+ mlcd.displayJpgImageCoordinate( COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
 }
 
 void AppControl::displayTempHumiIndex()
@@ -240,8 +249,7 @@ void AppControl::controlApplication()
 
 
         case MENU:
-
-            switch (getAction()) {
+          switch (getAction()) {
             
             case ENTRY:
                mlcd.fillBackgroundWhite();	
@@ -250,127 +258,120 @@ void AppControl::controlApplication()
             break;
 
 
-
+//ここからDOの始まり
             case DO:
-   switch(getFocusState()){
-
-
-                  case MENU_WBGT:
-                      
-                       Serial.println("1");
-                       setFocusState(MENU_WBGT);
-                         if(m_flag_btnC_is_pressed==true){
-                       setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
-                      Serial.println("a");
-                         
-                           displayMenuInit();
-                             getFocusState();
-                      setFocusState(MENU_WBGT);//現在のフォーカス状態の設定
+     if(m_flag_btnC_is_pressed==true){
+             setBtnAllFlgFalse();
+                          
+                    Serial.println("huh");
+                     switch(getFocusState()){          
                      
+                     case MENU_WBGT: 
+                      Serial.println("1");
                       focusChangeImg(MENU_WBGT,MENU_MUSIC);
-                      }
-                      else if(m_flag_btnA_is_pressed==true){
-                        setBtnAllFlgFalse();
-                       Serial.println("A");
-                           displayMenuInit();
-                       setFocusState(MENU_WBGT);
-                        displayMenuInit();
-                      focusChangeImg(MENU_WBGT, MENU_DATE);
-                      }
-                      else  
-                       setFocusState(MENU_WBGT);
-  Serial.println("@");
-                      focusChangeImg(MENU_WBGT, MENU_MUSIC);
-                    break;
-
-                    case MENU_MUSIC:
-                       Serial.println("2");
-
-                       if(m_flag_btnC_is_pressed==true){
-                      setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
-                      Serial.println("b");
-                           displayMenuInit();	
-                      setFocusState(MENU_MEASURE);//現在のフォーカス状態の設定
-                       getFocusState();
-                      focusChangeImg(MENU_MUSIC,MENU_MEASURE);
-                      }
-
-
-                      else if(m_flag_btnA_is_pressed==true){
-                        setBtnAllFlgFalse();
-                        Serial.println("B");
-                           displayMenuInit();
-                        setFocusState(MENU_MUSIC);
-                      focusChangeImg(MENU_MUSIC, MENU_WBGT);
-                    }
-
-
-
-                    else
-                      setFocusState(MENU_WBGT);
-                    focusChangeImg(MENU_MUSIC,MENU_MUSIC);
-
-                    break;
-
-
-
-
-
-                    case MENU_MEASURE:
-                 
-                       Serial.println("3");
-                         if(m_flag_btnC_is_pressed==true){
-                       setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
-                      Serial.println("c");  
-                           displayMenuInit();	
-                      setFocusState(MENU_DATE);//現在のフォーカス状態の設定
-                      focusChangeImg(MENU_MEASURE,MENU_DATE);
-                      }
-
-                      else if(m_flag_btnA_is_pressed==true){
-                        setBtnAllFlgFalse();
-                        Serial.println("C");
-                           displayMenuInit();
-                        setFocusState(MENU_MUSIC);
-                      focusChangeImg(MENU_MEASURE, MENU_MUSIC);
-                    }
-                      else
-                       setFocusState(MENU_MEASURE);
-                      focusChangeImg(MENU_MEASURE, MENU_MEASURE);
-                    break;
-
-
-                  case MENU_DATE:{}
-                      displayDateInit();
-                       Serial.println("4");
-                     if(m_flag_btnC_is_pressed==true){
-                       setBtnAllFlgFalse();//ボタンがおされていない状態にする：全部false
-                      Serial.println("d");
-                           displayMenuInit();	
-                      setFocusState(MENU_WBGT);//現在のフォーカス状態の設定
-                      focusChangeImg(MENU_DATE,MENU_WBGT);
-                      }
-
-                      else if(m_flag_btnA_is_pressed==true){
-                        setBtnAllFlgFalse();
-                        Serial.println("D");
-                           displayMenuInit();
-                        setFocusState(MENU_MEASURE);
-                      focusChangeImg(MENU_DATE, MENU_MEASURE);
-                    }
-                      else
-                       setFocusState(MENU_DATE);
-                      focusChangeImg(MENU_DATE, MENU_DATE);
-                    break;
-
-                  default:
+                      setFocusState(MENU_MUSIC); 
+               break;
+                    
+                    case MENU_MUSIC: 
+                     Serial.println("2");
+                      focusChangeImg( MENU_MUSIC,MENU_MEASURE);
+                     setFocusState(MENU_MEASURE);       
                   break;
-                }    
+                    case MENU_MEASURE:  
+                     Serial.println("3");   
+                     focusChangeImg(MENU_MEASURE,MENU_DATE);
+                    setFocusState(MENU_DATE);       
+                break;
+                        
+                    case MENU_DATE:
+                     Serial.println("4");   
+                     focusChangeImg( MENU_DATE,MENU_WBGT);
+                       setFocusState(MENU_WBGT);  
+                      break;      
+                     }
+                      
+            
+                }  
+
+
+
+        if(m_flag_btnA_is_pressed==true){
+             setBtnAllFlgFalse();
+                          
+                    Serial.println("huh");
+                     switch(getFocusState()){          
+                     
+                     case MENU_WBGT: 
+                      Serial.println("A");
+                      focusChangeImg(MENU_WBGT,MENU_DATE);
+                      setFocusState(MENU_DATE); 
+               break;
+                    
+                    case MENU_MUSIC: 
+                     Serial.println("B");
+                      focusChangeImg( MENU_MUSIC,MENU_WBGT);
+                     setFocusState(MENU_WBGT);       
+                  break;
+                    case MENU_MEASURE:  
+                     Serial.println("C");   
+                     focusChangeImg(MENU_MEASURE,MENU_MUSIC);
+                    setFocusState(MENU_MUSIC);       
+                break;
+                        
+                    case MENU_DATE:
+                     Serial.println("D");   
+                     focusChangeImg( MENU_DATE,MENU_MEASURE);
+                       setFocusState(MENU_MEASURE);  
+                      break;      
+                     }
+                      
+            
+                }   
+
+
+
+            if(m_flag_btnB_is_pressed==true){
+             setBtnAllFlgFalse();
+                          
+                    Serial.println("huh");
+                     switch(getFocusState()){          
+                     
+                     case MENU_WBGT: 
+                      Serial.println("1");
+                       mlcd.fillBackgroundWhite();	
+                      displayWBGTInit();
+                     
+               break;
+                    
+                    case MENU_MUSIC: 
+                     Serial.println("2");
+                      focusChangeImg( MENU_MUSIC,MENU_MEASURE);
+                     setFocusState(MENU_MEASURE);       
+                  break;
+                    case MENU_MEASURE:  
+                     Serial.println("3");   
+                     focusChangeImg(MENU_MEASURE,MENU_DATE);
+                    setFocusState(MENU_DATE);       
+                break;
+                        
+                    case MENU_DATE:
+                     Serial.println("4");   
+                     focusChangeImg( MENU_DATE,MENU_WBGT);
+                       setFocusState(MENU_WBGT);  
+                      break;      
+                     }
+                      
+            
+                } 
             break;
+//ここまでがDOの中身
+
 
 
             case EXIT:
-            default:
+ setStateMachine(MENU,ENTRY);       
+       
+
                 break;
             }
             break;

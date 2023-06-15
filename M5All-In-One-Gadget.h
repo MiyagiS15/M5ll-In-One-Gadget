@@ -106,6 +106,21 @@
 #define MENU_DATE_FOCUS_X_CRD 0 
 #define MENU_DATE_FOCUS_Y_CRD  150
 // WBGT jpg image coordinate
+#define WBGT_TEMPERATURE_X_CRD 0
+#define WBGT_TEMPERATURE_Y_CRD 0
+#define WBGT_DEGREE_X_CRD 253
+#define WBGT_DEGREE_Y_CRD 0
+#define WBGT_HUMIDITY_X_CRD 0
+#define WBGT_HUMIDITY_Y_CRD 50
+#define WBGT_PERCENT_X_CRD 253
+#define WBGT_PERCENT_Y_CRD 50
+#define WBGT_SAFE_X_CRD 0
+#define WBGT_SAFE_Y_CRD 100
+#define COMMON_BUTTON_X_CRD 120
+#define COMMON_BUTTON_Y_CRD 200
+
+
+
 
 
 // Music jpg image coordinate
