@@ -128,6 +128,17 @@
 // Measure jpg image coordinate
 
 // Date jpg image coordinate
+#define DATE_NOTICE_X_CRD 0
+#define DATE_NOTICE_Y_CRD 0
+#define DATE_SLASH_X_CRD 10
+#define DATE_SLASH_Y_CRD 100
+#define DATE_COLON_X_CRD 40
+#define DATE_COLON_Y_CRD 150
+#define COMMON_BUTTON_X_CRD 120
+#define COMMON_BUTTON_Y_CRD 200
+
+
+
 
 
 

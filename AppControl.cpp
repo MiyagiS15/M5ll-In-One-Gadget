@@ -7,12 +7,15 @@
 #include <Arduino.h>
 #include <M5Stack.h>
 #include "MdLcd.h"
+#include "MdDateTime.h"
+#include "DrTHSensor.h"
 
 MdLcd mlcd;
 MdWBGTMonitor mwbgt;
 MdMusicPlayer mmplay;
 MdMeasureDistance mmdist;
 MdDateTime mdtime;
+DrTHSensor drthsensor;
 
 
 const char* g_str_orange[] = {
@@ -191,11 +194,19 @@ void AppControl::displayMeasureDistance()
 
 void AppControl::displayDateInit()
 {
+  mlcd.displayJpgImageCoordinate(DATE_NOTICE_IMG_PATH,DATE_NOTICE_X_CRD,DATE_NOTICE_Y_CRD);
+  mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,DATE_SLASH_X_CRD,DATE_SLASH_Y_CRD);
+  mlcd.displayJpgImageCoordinate(DATE_COLON_IMG_PATH,DATE_COLON_X_CRD,DATE_COLON_Y_CRD);
+  mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
    
 }
 
 void AppControl::displayDateUpdate()
 {
+   
+    mdtime.readTime();
+    mdtime.readDate();
+     MdDateTime();
 }
 
 void AppControl::controlApplication()
@@ -363,17 +374,17 @@ void AppControl::controlApplication()
         switch (getAction()) {
             case ENTRY:
             displayWBGTInit();
-             setStateMachine(MENU,DO); 
+            setStateMachine(WBGT,DO); 
             break;
 
             case DO:
-            setStateMachine(MENU,EXIT);
-                break;
+            setStateMachine(WBGT,EXIT);
+            break;
 
             case EXIT:
-             if(m_flag_btnB_is_pressed){
-                 setStateMachine(MENU,ENTRY); 
-             setBtnAllFlgFalse();
+            if(m_flag_btnB_is_pressed){
+            setStateMachine(MENU,ENTRY); 
+            setBtnAllFlgFalse();
         
                 }  
                 break;
@@ -447,18 +458,28 @@ void AppControl::controlApplication()
 
             break;
 
-        case DATE:
+    case DATE:
 
-            switch (getAction()) {
+        switch (getAction()) {
             case ENTRY:
-              displayWBGTInit();
-                break;
+            mlcd.fillBackgroundWhite();	
+            displayDateInit();
+            setStateMachine(WBGT,DO); 
+            break;
 
             case DO:
-                break;
+            setStateMachine(WBGT,EXIT);
+            displayDateUpdate();
+            break;
 
             case EXIT:
+            if(m_flag_btnB_is_pressed){
+            setStateMachine(MENU,ENTRY); 
+            setBtnAllFlgFalse();
+        
+                }  
                 break;
+                
 
             default:
                 break;
