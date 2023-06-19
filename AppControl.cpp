@@ -197,15 +197,14 @@ void AppControl::displayDateInit()
 
 void AppControl::displayDateUpdate()
 {   
-   String date = mdtime.readDate();
-  String time = mdtime.readTime();
- 
+    String date = mdtime.readDate();
+    String time = mdtime.readTime();
     mlcd.displayDateText(date,10, 100);	
     mlcd.displayDateText(time,40,150);	
-    mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,DATE_SLASH_X_CRD,DATE_SLASH_Y_CRD);
-    //mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,DATE_SLASH_X_CRD,DATE_SLASH_Y_CRD);
-
-    
+    mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,125,95);
+    mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,215,95);
+    mlcd.displayJpgImageCoordinate(DATE_COLON_IMG_PATH,95,140);
+    mlcd.displayJpgImageCoordinate(DATE_COLON_IMG_PATH,185,140);   
 }
 
 void AppControl::controlApplication()
@@ -442,6 +441,11 @@ void AppControl::controlApplication()
 
             break;
 
+
+
+
+
+
         case MEASURE:
 
             switch (getAction()) {
@@ -461,21 +465,18 @@ void AppControl::controlApplication()
 
             break;
 
+//時刻表示処理始まり
     case DATE:
-
         switch (getAction()) {
             
             case ENTRY:
-           
             mlcd.fillBackgroundWhite();	  
-            displayDateInit(); 
-          displayDateUpdate();
-       
+            displayDateInit();
             setStateMachine(DATE,DO); 
-          
             break;
 
             case DO:
+            displayDateUpdate();
             setStateMachine(DATE,EXIT);
            
             break;
@@ -484,8 +485,6 @@ void AppControl::controlApplication()
             if(m_flag_btnB_is_pressed){
                 setBtnAllFlgFalse();
             setStateMachine(MENU,ENTRY); 
-            
-        
                 }  
                 break;
                 
@@ -493,6 +492,7 @@ void AppControl::controlApplication()
             default:
                 break;
             }
+            //時刻表示処理終わり
 
         default:
             break;
