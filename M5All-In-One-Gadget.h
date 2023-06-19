@@ -32,8 +32,8 @@
 #define WBGT_DEGREE_IMG_PATH "/images/wbgt/degree.jpg"
 #define WBGT_PERCENT_IMG_PATH "/images/wbgt/percent.jpg"
 
-#define MUSIC_NOWPLAYING_IMG_PATH "/images/music/nowplaying.jpg"
-#define MUSIC_NOWSTOPPING_IMG_PATH "/images/music/nowstopping.jpg"
+#define MUSIC_NOWPLAYING_IMG_PATH "/images/title/music/nowplaying.jpg"
+#define MUSIC_NOWSTOPPING_IMG_PATH "/images/title/music/nowstopping.jpg"
 
 #define MEASURE_NOTICE_IMG_PATH "/images/measure/measure.jpg"
 #define MEASURE_CM_IMG_PATH "/images/measure/cm.jpg"
@@ -105,6 +105,9 @@
 #define MENU_MEASURE_FOCUS_Y_CRD 100
 #define MENU_DATE_FOCUS_X_CRD 0 
 #define MENU_DATE_FOCUS_Y_CRD  150
+
+
+
 // WBGT jpg image coordinate
 #define WBGT_TEMPERATURE_X_CRD 0
 #define WBGT_TEMPERATURE_Y_CRD 0
@@ -118,20 +121,56 @@
 #define WBGT_SAFE_Y_CRD 100
 #define COMMON_BUTTON_X_CRD 120
 #define COMMON_BUTTON_Y_CRD 200
-
+//#define COMMON_ORANGE1_X_CRD 
+//#define COMMON_ORANGE1_Y_CRD
+#define COMMON_ORANGE2_X_CRD 120
+#define COMMON_ORANGE2_Y_CRD 0
+#define COMMON_ORANGE3_X_CRD 153
+#define COMMON_ORANGE3_Y_CRD 0
+#define COMMON_ORANGE4_X_CRD 220
+#define COMMON_ORANGE4_Y_CRD 0
+/*#define COMMON_ORANGE5_X_CRD
+#define COMMON_ORANGE5_Y_CRD
+#define COMMON_ORANGE6_X_CRD
+#define COMMON_ORANGE6_Y_CRD
+#define COMMON_ORANGE7_X_CRD
+#define COMMON_ORANGE7_Y_CRD
+#define COMMON_ORANGE8_X_CRD
+#define COMMON_ORANGE8_Y_CRD
+#define COMMON_ORANGE9_X_CRD
+#define COMMON_ORANGE9_Y_CRD
+#define COMMON_ORANGE0_X_CRD
+#define COMMON_ORANGE0_Y_CRD
+#define COMMON_ORANGEDOT_X_CRD 186
+#define COMMON_ORANGEDOT_Y_CRD 0
+#define COMMON_ORANGEFILLWHITE_X_CRD 253
+#define COMMON_ORANGEFILLWHITE_Y_CRD 0*/
 
 
 
 
 // Music jpg image coordinate
+#define MUSIC_NOWPLAYING_X_CRD 0
+#define MUSIC_NOWPLAYING_Y_CRD 0
+#define MUSIC_NOWSTOPPING_X_CRD 0
+#define MUSIC_NOWSTOPPING_Y_CRD 0
+#define COMMON_BUTTON_NEXT_X_CRD 240
+#define COMMON_BUTTON_NEXT_Y_CRD 200
+#define COMMON_BUTTON_PLAY_X_CRD 0
+#define COMMON_BUTTON_PLAY_Y_CRD 200
+#define COMMON_BUTTON_STOP_X_CRD 0
+#define COMMON_BUTTON_STOP_Y_CRD 200
+#define COMMON_BUTTON_X_CRD 120
+#define COMMON_BUTTON_Y_CRD 200
+
 
 // Measure jpg image coordinate
 
 // Date jpg image coordinate
 #define DATE_NOTICE_X_CRD 0
 #define DATE_NOTICE_Y_CRD 0
-#define DATE_SLASH_X_CRD 10
-#define DATE_SLASH_Y_CRD 100
+#define DATE_SLASH_X_CRD 125
+#define DATE_SLASH_Y_CRD 90
 #define DATE_COLON_X_CRD 40
 #define DATE_COLON_Y_CRD 150
 #define COMMON_BUTTON_X_CRD 120

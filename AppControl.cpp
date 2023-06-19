@@ -129,24 +129,18 @@ void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
 
     switch(next_state){
     case MENU_WBGT:
-     mlcd.displayJpgImageCoordinate(MENU_WBGT_FOCUS_IMG_PATH,MENU_WBGT_FOCUS_X_CRD,MENU_WBGT_FOCUS_Y_CRD);
-    
-     break;
+    mlcd.displayJpgImageCoordinate(MENU_WBGT_FOCUS_IMG_PATH,MENU_WBGT_FOCUS_X_CRD,MENU_WBGT_FOCUS_Y_CRD);
+    break;
     case MENU_MUSIC:
-    
-     mlcd.displayJpgImageCoordinate(MENU_MUSIC_FOCUS_IMG_PATH,MENU_MUSIC_FOCUS_X_CRD,MENU_MUSIC_FOCUS_Y_CRD);	
-    
+    mlcd.displayJpgImageCoordinate(MENU_MUSIC_FOCUS_IMG_PATH,MENU_MUSIC_FOCUS_X_CRD,MENU_MUSIC_FOCUS_Y_CRD);	
     break;
     case MENU_MEASURE:
-     mlcd.displayJpgImageCoordinate(MENU_MEASURE_FOCUS_IMG_PATH,MENU_MEASURE_FOCUS_X_CRD,MENU_MEASURE_FOCUS_Y_CRD);	
-    
+    mlcd.displayJpgImageCoordinate(MENU_MEASURE_FOCUS_IMG_PATH,MENU_MEASURE_FOCUS_X_CRD,MENU_MEASURE_FOCUS_Y_CRD);	
     break;
     case MENU_DATE:
-     mlcd.displayJpgImageCoordinate(MENU_DATE_FOCUS_IMG_PATH,MENU_DATE_FOCUS_X_CRD,MENU_DATE_FOCUS_Y_CRD);	
-    
+    mlcd.displayJpgImageCoordinate(MENU_DATE_FOCUS_IMG_PATH,MENU_DATE_FOCUS_X_CRD,MENU_DATE_FOCUS_Y_CRD);	
     break;
     }
- 
 }
 
 void AppControl::displayWBGTInit()
@@ -157,7 +151,7 @@ void AppControl::displayWBGTInit()
  mlcd.displayJpgImageCoordinate(WBGT_HUMIDITY_IMG_PATH,WBGT_HUMIDITY_X_CRD,WBGT_HUMIDITY_Y_CRD);
  mlcd.displayJpgImageCoordinate(WBGT_DEGREE_IMG_PATH,WBGT_DEGREE_X_CRD,WBGT_DEGREE_Y_CRD);
  mlcd.displayJpgImageCoordinate(WBGT_PERCENT_IMG_PATH,WBGT_PERCENT_X_CRD,WBGT_PERCENT_Y_CRD);
- mlcd.displayJpgImageCoordinate( COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
+ mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
 }
 
 void AppControl::displayTempHumiIndex()
@@ -202,11 +196,16 @@ void AppControl::displayDateInit()
 }
 
 void AppControl::displayDateUpdate()
-{
-   
-    mdtime.readTime();
-    mdtime.readDate();
-     MdDateTime();
+{   
+   String date = mdtime.readDate();
+  String time = mdtime.readTime();
+ 
+    mlcd.displayDateText(date,10, 100);	
+    mlcd.displayDateText(time,40,150);	
+    mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,DATE_SLASH_X_CRD,DATE_SLASH_Y_CRD);
+    //mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,DATE_SLASH_X_CRD,DATE_SLASH_Y_CRD);
+
+    
 }
 
 void AppControl::controlApplication()
@@ -368,17 +367,20 @@ void AppControl::controlApplication()
 
 
 
-
+//熱中症処理の始まり
     case WBGT:
 
         switch (getAction()) {
             case ENTRY:
+            mlcd.fillBackgroundWhite();
             displayWBGTInit();
             setStateMachine(WBGT,DO); 
             break;
 
             case DO:
             setStateMachine(WBGT,EXIT);
+        		
+
             break;
 
             case EXIT:
@@ -395,6 +397,7 @@ void AppControl::controlApplication()
             }
 
             break;
+//熱中症処理の終わり
 
 
 
@@ -461,21 +464,27 @@ void AppControl::controlApplication()
     case DATE:
 
         switch (getAction()) {
+            
             case ENTRY:
-            mlcd.fillBackgroundWhite();	
-            displayDateInit();
-            setStateMachine(WBGT,DO); 
+           
+            mlcd.fillBackgroundWhite();	  
+            displayDateInit(); 
+          displayDateUpdate();
+       
+            setStateMachine(DATE,DO); 
+          
             break;
 
             case DO:
-            setStateMachine(WBGT,EXIT);
-            displayDateUpdate();
+            setStateMachine(DATE,EXIT);
+           
             break;
 
             case EXIT:
             if(m_flag_btnB_is_pressed){
+                setBtnAllFlgFalse();
             setStateMachine(MENU,ENTRY); 
-            setBtnAllFlgFalse();
+            
         
                 }  
                 break;
