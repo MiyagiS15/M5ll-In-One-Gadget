@@ -160,14 +160,24 @@ void AppControl::displayTempHumiIndex()
 
 void AppControl::displayMusicInit()
 {
+mlcd.displayJpgImageCoordinate(MUSIC_NOWSTOPPING_IMG_PATH,MUSIC_NOWSTOPPING_X_CRD,MUSIC_NOWSTOPPING_Y_CRD);
+mlcd.displayJpgImageCoordinate(COMMON_BUTTON_NEXT_IMG_PATH,COMMON_BUTTON_NEXT_X_CRD,COMMON_BUTTON_NEXT_Y_CRD);
+mlcd.displayJpgImageCoordinate(COMMON_BUTTON_PLAY_IMG_PATH,COMMON_BUTTON_PLAY_X_CRD,COMMON_BUTTON_PLAY_Y_CRD);
+mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
  }
 
 void AppControl::displayMusicStop()
 {
+mlcd.displayJpgImageCoordinate(MUSIC_NOWSTOPPING_IMG_PATH,MUSIC_NOWSTOPPING_X_CRD,MUSIC_NOWSTOPPING_Y_CRD);
+mlcd.displayJpgImageCoordinate(COMMON_BUTTON_NEXT_IMG_PATH,COMMON_BUTTON_NEXT_X_CRD,COMMON_BUTTON_NEXT_Y_CRD);
+mlcd.displayJpgImageCoordinate(COMMON_BUTTON_PLAY_IMG_PATH,COMMON_BUTTON_PLAY_X_CRD,COMMON_BUTTON_PLAY_Y_CRD);
+mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
+
 }
 
 void AppControl::displayMusicTitle()
 {
+   
 }
 
 void AppControl::displayNextMusic()
@@ -176,6 +186,10 @@ void AppControl::displayNextMusic()
 
 void AppControl::displayMusicPlay()
 {
+mlcd.displayJpgImageCoordinate(MUSIC_NOWPLAYING_IMG_PATH,MUSIC_NOWSTOPPING_X_CRD,MUSIC_NOWSTOPPING_Y_CRD);
+mlcd.displayJpgImageCoordinate(COMMON_BUTTON_STOP_IMG_PATH,COMMON_BUTTON_STOP_X_CRD,COMMON_BUTTON_STOP_Y_CRD);
+
+       
 }
 
 void AppControl::displayMeasureInit()
@@ -260,7 +274,7 @@ void AppControl::controlApplication()
             break;
 
 
-//ここからDOの始まり
+//ここからMENUのDOの始まり
             case DO:
      if(m_flag_btnC_is_pressed){
              setBtnAllFlgFalse();
@@ -322,18 +336,15 @@ void AppControl::controlApplication()
                      }         
                 }  
 
-
-
             if(m_flag_btnB_is_pressed==true){ 
                setStateMachine(MENU,EXIT);      
                 } 
             break;
-//ここまでがDOの中身
+//ここまでがMENUのDOの中身
 
 
 
     case EXIT:
-
      if(m_flag_btnB_is_pressed){
              setBtnAllFlgFalse();
            
@@ -408,16 +419,32 @@ void AppControl::controlApplication()
         case MUSIC_STOP:
             switch (getAction()) {
             case ENTRY:
-         displayWBGTInit();
+             setBtnAllFlgFalse();
+             mlcd.fillBackgroundWhite();	  
+             displayMusicInit();
+             setStateMachine(MUSIC_STOP,DO); 
                 break;
 
             case DO:
+            setStateMachine(MUSIC_STOP,EXIT);
                 break;
 
             case EXIT:
-                break;
+             if(m_flag_btnB_is_pressed){
+                setBtnAllFlgFalse();
+            setStateMachine(MENU,ENTRY); 
+                }
 
+            else if(m_flag_btnA_is_pressed){
+                setBtnAllFlgFalse();
+                  mlcd.fillBackgroundWhite();	
+            setStateMachine(MUSIC_PLAY,ENTRY); 
+                Serial.println("1");
+                }  
+                break;
+Serial.println("2");
             default:
+            
                 break;
             }
 
@@ -427,15 +454,36 @@ void AppControl::controlApplication()
 
             switch (getAction()) {
             case ENTRY:
-                break;
+              setBtnAllFlgFalse();
+              displayMusicPlay();
+              Serial.println("a");
+            mmplay.init();
+            
+               //setStateMachine(MUSIC_PLAY,ENTRY);
+              break;
 
             case DO:
+            
+          setStateMachine(MUSIC_STOP,ENTRY);
                 break;
 
             case EXIT:
+            setStateMachine(MUSIC_STOP,ENTRY);
+            
+             
+             if(m_flag_btnA_is_pressed){
+                Serial.println("b");
+               setStateMachine(MUSIC_STOP,ENTRY); 
+                } 
+                else{
+                     Serial.println("c");
+                  setStateMachine(MUSIC_PLAY,ENTRY); 
+                }
+
                 break;
 
             default:
+               
                 break;
             }
 

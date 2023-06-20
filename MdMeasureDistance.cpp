@@ -1,6 +1,6 @@
 #include "MdMeasureDistance.h"
-
-/*MdMeasureDistance::getDistance(){
+/*
+MdMeasureDistance::getDistance(){
 
 
 }*/

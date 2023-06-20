@@ -32,8 +32,8 @@
 #define WBGT_DEGREE_IMG_PATH "/images/wbgt/degree.jpg"
 #define WBGT_PERCENT_IMG_PATH "/images/wbgt/percent.jpg"
 
-#define MUSIC_NOWPLAYING_IMG_PATH "/images/title/music/nowplaying.jpg"
-#define MUSIC_NOWSTOPPING_IMG_PATH "/images/title/music/nowstopping.jpg"
+#define MUSIC_NOWPLAYING_IMG_PATH "/images/music/nowplaying.jpg"
+#define MUSIC_NOWSTOPPING_IMG_PATH "/images/music/nowstopping.jpg"
 
 #define MEASURE_NOTICE_IMG_PATH "/images/measure/measure.jpg"
 #define MEASURE_CM_IMG_PATH "/images/measure/cm.jpg"

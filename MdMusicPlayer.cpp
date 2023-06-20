@@ -3,6 +3,8 @@
 #include "AudioFileSourceSD.h"
 #include "AudioGeneratorMP3.h"
 #include "AudioOutputI2S.h"
+#include <Arduino.h>
+#include <M5Stack.h>
 
 AudioGeneratorMP3* mp3;
 AudioFileSourceSD* file;
@@ -14,8 +16,6 @@ File entry;
 
 void MdMusicPlayer::init()
 {
-   // pinMode(10, OUTPUT);
-
     SD.begin();
     musicfolder = SD.open("/music");
     if (!musicfolder) {
@@ -23,12 +23,14 @@ void MdMusicPlayer::init()
         Serial.println("musicfolder open error");
     } else {
         entry = musicfolder.openNextFile();
+        Serial.println("open ");
     }
 }
 
 char* MdMusicPlayer::getTitle()
 {
     return (char*)entry.name();
+      Serial.println("hhhh ");
 }
 
 void MdMusicPlayer::selectNextMusic()
