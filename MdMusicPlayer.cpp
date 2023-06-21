@@ -29,8 +29,7 @@ void MdMusicPlayer::init()
 
 char* MdMusicPlayer::getTitle()
 {
-    return (char*)entry.name();
-      Serial.println("hhhh ");
+    return (char*)entry.name();//entry.neme()をcharのポインタ型に変換して返す
 }
 
 void MdMusicPlayer::selectNextMusic()

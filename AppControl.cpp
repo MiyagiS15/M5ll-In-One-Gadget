@@ -10,6 +10,7 @@
 #include "MdDateTime.h"
 #include "DrTHSensor.h"
 
+//インスタンス化
 MdLcd mlcd;
 MdWBGTMonitor mwbgt;
 MdMusicPlayer mmplay;
@@ -17,7 +18,7 @@ MdMeasureDistance mmdist;
 MdDateTime mdtime;
 DrTHSensor drthsensor;
 
-
+//グローバル変数
 const char* g_str_orange[] = {
     COMMON_ORANGE0_IMG_PATH,
     COMMON_ORANGE1_IMG_PATH,
@@ -187,13 +188,14 @@ void AppControl::displayNextMusic()
 void AppControl::displayMusicPlay()
 {
 mlcd.displayJpgImageCoordinate(MUSIC_NOWPLAYING_IMG_PATH,MUSIC_NOWSTOPPING_X_CRD,MUSIC_NOWSTOPPING_Y_CRD);
-mlcd.displayJpgImageCoordinate(COMMON_BUTTON_STOP_IMG_PATH,COMMON_BUTTON_STOP_X_CRD,COMMON_BUTTON_STOP_Y_CRD);
-
-       
+mlcd.displayJpgImageCoordinate(COMMON_BUTTON_STOP_IMG_PATH,COMMON_BUTTON_STOP_X_CRD,COMMON_BUTTON_STOP_Y_CRD);       
 }
 
 void AppControl::displayMeasureInit()
 {   
+    mlcd.displayJpgImageCoordinate(MEASURE_NOTICE_IMG_PATH,MEASURE_NOTICE_X_CRD,MEASURE_NOTICE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
+
 }
 
 void AppControl::displayMeasureDistance()
@@ -238,7 +240,6 @@ void AppControl::controlApplication()
                 */ 
                 displayTitleInit();//タイトル画面の呼び出し
                 setStateMachine(TITLE,DO);
-                //if(setBtnAllFlgFalse(true))
                  if (m_flag_btnA_is_pressed || m_flag_btnB_is_pressed || m_flag_btnC_is_pressed) { //ボタンを押した際にMENU画面に移行
                     mlcd.fillBackgroundWhite();	
                     setStateMachine(MENU,ENTRY);
@@ -389,23 +390,17 @@ void AppControl::controlApplication()
 
             case DO:
             setStateMachine(WBGT,EXIT);
-        		
-
             break;
 
             case EXIT:
             if(m_flag_btnB_is_pressed){
             setStateMachine(MENU,ENTRY); 
             setBtnAllFlgFalse();
-        
                 }  
                 break;
-                
-
             default:
                 break;
             }
-
             break;
 //熱中症処理の終わり
 
@@ -441,6 +436,17 @@ void AppControl::controlApplication()
             setStateMachine(MUSIC_PLAY,ENTRY); 
                 Serial.println("1");
                 }  
+
+             if(m_flag_btnC_is_pressed){
+                setBtnAllFlgFalse();
+                mmplay.init();
+                mmplay.selectNextMusic();	
+                 mmplay.prepareMP3();		
+Serial.println("jjjjjjjjj");
+            setStateMachine(MUSIC_STOP,ENTRY); 
+                }
+
+
                 break;
 Serial.println("2");
             default:
@@ -455,34 +461,39 @@ Serial.println("2");
             switch (getAction()) {
             case ENTRY:
               setBtnAllFlgFalse();
-              displayMusicPlay();
+                 displayMusicPlay();
               Serial.println("a");
-            mmplay.init();
-            
-               //setStateMachine(MUSIC_PLAY,ENTRY);
+             mmplay.init();
+            // char entry =mmplay.getTitle();
+             mmplay.prepareMP3();
+             setStateMachine(MUSIC_PLAY,DO); 
+             //setStateMachine(MUSIC_PLAY,ENTRY);
               break;
 
             case DO:
-            
-          setStateMachine(MUSIC_STOP,ENTRY);
-                break;
+            mmplay.playMP3();
+            setStateMachine(MUSIC_PLAY,DO);
+
+                setStateMachine(MUSIC_PLAY,DO);
+              if(m_flag_btnA_is_pressed){
+                Serial.println("b");
+                 setBtnAllFlgFalse();
+               setStateMachine(MUSIC_PLAY,EXIT); 
+                } 
+              
+               
+            break;
 
             case EXIT:
-            setStateMachine(MUSIC_STOP,ENTRY);
+          
+            setBtnAllFlgFalse();
+            setStateMachine(MUSIC_STOP,ENTRY); 
+                 
             
-             
-             if(m_flag_btnA_is_pressed){
-                Serial.println("b");
-               setStateMachine(MUSIC_STOP,ENTRY); 
-                } 
-                else{
-                     Serial.println("c");
-                  setStateMachine(MUSIC_PLAY,ENTRY); 
-                }
 
                 break;
 
-            default:
+           default:
                
                 break;
             }
@@ -498,13 +509,23 @@ Serial.println("2");
 
             switch (getAction()) {
             case ENTRY:
-              displayWBGTInit();
+            mlcd.fillBackgroundWhite();	
+             displayMeasureInit();
+            // drthsensor.measureReturnTime();
+       
+            setStateMachine(MEASURE,DO); 
                 break;
 
             case DO:
+            
+            setStateMachine(MEASURE,EXIT);
                 break;
 
             case EXIT:
+             if(m_flag_btnB_is_pressed){
+                 setBtnAllFlgFalse(); 
+            setStateMachine(MENU,ENTRY);
+                } 
                 break;
 
             default:
@@ -531,18 +552,13 @@ Serial.println("2");
 
             case EXIT:
             if(m_flag_btnB_is_pressed){
-                setBtnAllFlgFalse();
-            setStateMachine(MENU,ENTRY); 
+                 setBtnAllFlgFalse(); 
+            setStateMachine(MENU,ENTRY);
                 }  
                 break;
-                
-
             default:
                 break;
             }
-            //時刻表示処理終わり
-
-        default:
             break;
         }
     }
