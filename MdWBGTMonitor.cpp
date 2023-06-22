@@ -1,14 +1,38 @@
 #include "MdWBGTMonitor.h"
 #include "DrTHSensor.h"
 #include "Wire.h"
-/*
+#include "AppControl.h"
+
 DrTHSensor dthsen;
 
-    void DrTHSensor::init(){}	
 
-    void DrTHSensor::getWBGT(double* temperature, double* humidity, WbgtIndex* index){
+void MdWBGTMonitor::init() {
+    dthsen.init();
+}
 
-        int calc_index = 0;
-    }	
-*/
+void MdWBGTMonitor::getWBGT(double* temperature, double* humidity, WbgtIndex* index) {
+             
+  
 
+
+    int calc_index = 0.68 * (*temperature) + 0.12 * (*humidity);
+dthsen.getTempHumi(temperature,humidity);
+
+        if (calc_index <= 15) {
+            *index = SAFE;
+        }
+        else if (calc_index <= 24) {
+            *index = ATTENTION;
+        }
+        else if (calc_index <= 27) {
+            *index = ALERT;
+        }
+        else if (calc_index <= 30) {
+            *index = HIGH_ALERT;
+        }
+        else {
+            
+            *index = DANGER;
+        }
+    
+}

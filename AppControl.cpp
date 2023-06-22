@@ -16,7 +16,7 @@ MdWBGTMonitor mwbgt;
 MdMusicPlayer mmplay;
 MdMeasureDistance mmdist;
 MdDateTime mdtime;
-DrTHSensor drthsensor;
+
 
 //グローバル変数
 const char* g_str_orange[] = {
@@ -153,10 +153,18 @@ void AppControl::displayWBGTInit()
  mlcd.displayJpgImageCoordinate(WBGT_DEGREE_IMG_PATH,WBGT_DEGREE_X_CRD,WBGT_DEGREE_Y_CRD);
  mlcd.displayJpgImageCoordinate(WBGT_PERCENT_IMG_PATH,WBGT_PERCENT_X_CRD,WBGT_PERCENT_Y_CRD);
  mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
+ mlcd.displayJpgImageCoordinate(COMMON_ORANGE1_IMG_PATH,COMMON_ORANGE1_X_CRD,COMMON_ORANGE1_Y_CRD);
 }
 
 void AppControl::displayTempHumiIndex()
 {
+   double temperature = 0;
+   double humidity = 0;
+  WbgtIndex index = SAFE;
+
+mwbgt.getWBGT(&temperature,&humidity,&index);
+//&変数でアドレスの取得、getWBGTに&temperature,&humidity,&indexのアドレスを引数として渡す。
+
 }
 
 void AppControl::displayMusicInit()
@@ -385,10 +393,12 @@ void AppControl::controlApplication()
             case ENTRY:
             mlcd.fillBackgroundWhite();
             displayWBGTInit();
+            displayTempHumiIndex();
             setStateMachine(WBGT,DO); 
             break;
 
             case DO:
+            //displayTempHumiIndex();
             setStateMachine(WBGT,EXIT);
             break;
 
@@ -511,6 +521,7 @@ Serial.println("2");
             case ENTRY:
             mlcd.fillBackgroundWhite();	
              displayMeasureInit();
+            
             // drthsensor.measureReturnTime();
        
             setStateMachine(MEASURE,DO); 
