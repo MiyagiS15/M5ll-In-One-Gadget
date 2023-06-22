@@ -393,16 +393,18 @@ void AppControl::controlApplication()
             case ENTRY:
             mlcd.fillBackgroundWhite();
             displayWBGTInit();
-            displayTempHumiIndex();
+            
             setStateMachine(WBGT,DO); 
             break;
 
             case DO:
             //displayTempHumiIndex();
+            displayTempHumiIndex();
             setStateMachine(WBGT,EXIT);
             break;
 
             case EXIT:
+             displayTempHumiIndex();
             if(m_flag_btnB_is_pressed){
             setStateMachine(MENU,ENTRY); 
             setBtnAllFlgFalse();
