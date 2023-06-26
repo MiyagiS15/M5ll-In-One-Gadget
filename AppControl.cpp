@@ -163,6 +163,9 @@ void AppControl::displayTempHumiIndex()
   WbgtIndex index = SAFE;
 
 mwbgt.getWBGT(&temperature,&humidity,&index);
+
+
+    
 //&変数でアドレスの取得、getWBGTに&temperature,&humidity,&indexのアドレスを引数として渡す。
 
 }

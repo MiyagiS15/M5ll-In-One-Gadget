@@ -49,5 +49,5 @@ void DrTHSensor::getTempHumi(double* temperature, double* humidity)
     *temperature = ((double)(t)*175 / 65535.0) - 45.0; // 温度の計算、temperatureに代入
     h = (dac[3] << 8) | dac[4]; // 4Byte目のデータを8bit左にシフト、OR演算子で5Byte目のデータを結合して、hに代入
     *humidity = ((double)(h) / 65535.0) * 100.0; // 湿度の計算、humidityに代入
-    Serial.println("DrTHSensor::getTempHumi(double* temperature, double* humidity)のシリアル");
+   
 }
