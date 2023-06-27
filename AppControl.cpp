@@ -9,6 +9,7 @@
 #include "MdLcd.h"
 #include "MdDateTime.h"
 #include "DrTHSensor.h"
+#include "DrUltraSonic.h"
 
 //インスタンス化
 MdLcd mlcd;
@@ -146,60 +147,113 @@ void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
 
 void AppControl::displayWBGTInit()
 {   
-    
- mlcd.displayJpgImageCoordinate(WBGT_SAFE_IMG_PATH,WBGT_SAFE_X_CRD,WBGT_SAFE_Y_CRD);
- mlcd.displayJpgImageCoordinate(WBGT_TEMPERATURE_IMG_PATH,WBGT_TEMPERATURE_X_CRD,WBGT_TEMPERATURE_Y_CRD);
- mlcd.displayJpgImageCoordinate(WBGT_HUMIDITY_IMG_PATH,WBGT_HUMIDITY_X_CRD,WBGT_HUMIDITY_Y_CRD);
- mlcd.displayJpgImageCoordinate(WBGT_DEGREE_IMG_PATH,WBGT_DEGREE_X_CRD,WBGT_DEGREE_Y_CRD);
- mlcd.displayJpgImageCoordinate(WBGT_PERCENT_IMG_PATH,WBGT_PERCENT_X_CRD,WBGT_PERCENT_Y_CRD);
- mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
- mlcd.displayJpgImageCoordinate(COMMON_ORANGE1_IMG_PATH,COMMON_ORANGE1_X_CRD,COMMON_ORANGE1_Y_CRD);
+    mlcd.displayJpgImageCoordinate(WBGT_SAFE_IMG_PATH,WBGT_SAFE_X_CRD,WBGT_SAFE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(WBGT_TEMPERATURE_IMG_PATH,WBGT_TEMPERATURE_X_CRD,WBGT_TEMPERATURE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(WBGT_HUMIDITY_IMG_PATH,WBGT_HUMIDITY_X_CRD,WBGT_HUMIDITY_Y_CRD);
+    mlcd.displayJpgImageCoordinate(WBGT_DEGREE_IMG_PATH,WBGT_DEGREE_X_CRD,WBGT_DEGREE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(WBGT_PERCENT_IMG_PATH,WBGT_PERCENT_X_CRD,WBGT_PERCENT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
 }
 
 void AppControl::displayTempHumiIndex()
 {
-   double temperature = 0;
-   double humidity = 0;
-  WbgtIndex index = SAFE;
+    double temperature = 0;
+    double humidity = 0;
+    WbgtIndex index = SAFE;
 
-mwbgt.getWBGT(&temperature,&humidity,&index);
+    mwbgt.getWBGT(&temperature,&humidity,&index);//&変数でアドレスの取得、getWBGTに&temperature,&humidity,&indexのアドレスを引数として渡す。
+
+    int calc_result = 0.68 * (temperature) + 0.12 * (humidity);
+
+    if (calc_result <= 15) {//安全画像の出力
+    mlcd.displayJpgImageCoordinate(WBGT_SAFE_IMG_PATH,WBGT_SAFE_X_CRD,WBGT_SAFE_Y_CRD);
+    }
+    else if (calc_result <= 24) {//注意画像の出力
+    mlcd.displayJpgImageCoordinate(WBGT_ATTENTION_IMG_PATH,WBGT_ATTENTION_X_CRD,WBGT_ATTENTION_Y_CRD);
+    }
+    else if (calc_result <= 27) {//警戒画像の出力
+    mlcd.displayJpgImageCoordinate(WBGT_ALERT_IMG_PATH,WBGT_ALERT_X_CRD,WBGT_ALERT_Y_CRD);
+    }
+    else if (calc_result <= 30) {//厳重警戒画像の出力
+    mlcd.displayJpgImageCoordinate(WBGT_HIGH_ALERT_IMG_PATH,WBGT_HIGH_ALERT_X_CRD,WBGT_HIGH_ALERT_Y_CRD);
+    }
+    else{//危険画像の出力
+    mlcd.displayJpgImageCoordinate(WBGT_DANGER_IMG_PATH,WBGT_DANGER_X_CRD,WBGT_DANGER_Y_CRD);
+    }
 
 
-    
-//&変数でアドレスの取得、getWBGTに&temperature,&humidity,&indexのアドレスを引数として渡す。
+Serial.println(temperature);//取得した温度を画面に表示
+    int tempInt = (int)temperature;
+    int t_digit1 = (tempInt / 10)%10;
+    int t_digit2 = tempInt % 10;
+    int t_decimal = (int)(temperature * 10) % 10;
 
+    const char* t_imagePath1 = g_str_orange[t_digit1];
+    const char* t_imagePath2 = g_str_orange[t_digit2];
+    const char* t_imagePathDecimal = g_str_orange[t_decimal];
+
+    mlcd.displayJpgImageCoordinate(t_imagePath1, WBGT_T2DIGIT_X_CRD, WBGT_T2DIGIT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(t_imagePath2,WBGT_T1DIGIT_X_CRD,WBGT_T1DIGIT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_ORANGEDOT_IMG_PATH,WBGT_TDOT_X_CRD,WBGT_TDOT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(t_imagePathDecimal,WBGT_T1DECIMAL_X_CRD,WBGT_T1DECIMAL_Y_CRD);
+
+
+    Serial.println(humidity);//取得した湿度を画面に表示
+    int humiInt = (int)humidity;
+    int h_digit1 = (humiInt / 10)%10;
+    int h_digit2 = humiInt % 10;
+    int h_decimal = (int)(humidity * 10) % 10;
+
+    const char* h_imagePath1 = g_str_blue[h_digit1];
+    const char* h_imagePath2 = g_str_blue[h_digit2];
+    const char* h_imagePathDecimal = g_str_blue[h_decimal];
+
+    mlcd.displayJpgImageCoordinate(h_imagePath1, WBGT_H2DIGIT_X_CRD, WBGT_H2DIGIT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(h_imagePath2,WBGT_H1DIGIT_X_CRD,WBGT_H1DIGIT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BLUEDOT_IMG_PATH,WBGT_HDOT_X_CRD,WBGT_HDOT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(h_imagePathDecimal,WBGT_H1DECIMAL_X_CRD,WBGT_H1DECIMAL_Y_CRD);
 }
+
 
 void AppControl::displayMusicInit()
 {
-mlcd.displayJpgImageCoordinate(MUSIC_NOWSTOPPING_IMG_PATH,MUSIC_NOWSTOPPING_X_CRD,MUSIC_NOWSTOPPING_Y_CRD);
-mlcd.displayJpgImageCoordinate(COMMON_BUTTON_NEXT_IMG_PATH,COMMON_BUTTON_NEXT_X_CRD,COMMON_BUTTON_NEXT_Y_CRD);
-mlcd.displayJpgImageCoordinate(COMMON_BUTTON_PLAY_IMG_PATH,COMMON_BUTTON_PLAY_X_CRD,COMMON_BUTTON_PLAY_Y_CRD);
-mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MUSIC_NOWSTOPPING_IMG_PATH,MUSIC_NOWSTOPPING_X_CRD,MUSIC_NOWSTOPPING_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_NEXT_IMG_PATH,COMMON_BUTTON_NEXT_X_CRD,COMMON_BUTTON_NEXT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_PLAY_IMG_PATH,COMMON_BUTTON_PLAY_X_CRD,COMMON_BUTTON_PLAY_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
  }
 
 void AppControl::displayMusicStop()
 {
-mlcd.displayJpgImageCoordinate(MUSIC_NOWSTOPPING_IMG_PATH,MUSIC_NOWSTOPPING_X_CRD,MUSIC_NOWSTOPPING_Y_CRD);
-mlcd.displayJpgImageCoordinate(COMMON_BUTTON_NEXT_IMG_PATH,COMMON_BUTTON_NEXT_X_CRD,COMMON_BUTTON_NEXT_Y_CRD);
-mlcd.displayJpgImageCoordinate(COMMON_BUTTON_PLAY_IMG_PATH,COMMON_BUTTON_PLAY_X_CRD,COMMON_BUTTON_PLAY_Y_CRD);
-mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MUSIC_NOWSTOPPING_IMG_PATH,MUSIC_NOWSTOPPING_X_CRD,MUSIC_NOWSTOPPING_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_NEXT_IMG_PATH,COMMON_BUTTON_NEXT_X_CRD,COMMON_BUTTON_NEXT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_PLAY_IMG_PATH,COMMON_BUTTON_PLAY_X_CRD,COMMON_BUTTON_PLAY_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
 
 }
 
 void AppControl::displayMusicTitle()
 {
    
+   char* title = mmplay.getTitle();
+   Serial.println(title);
+   mlcd.displayText(title,10,120);			
+
 }
 
 void AppControl::displayNextMusic()
 {
+    
+    mmplay.selectNextMusic();
+    char* title = mmplay.getTitle();
+    Serial.println(title);
+    mlcd.displayText(title,10,120);
 }
 
 void AppControl::displayMusicPlay()
 {
-mlcd.displayJpgImageCoordinate(MUSIC_NOWPLAYING_IMG_PATH,MUSIC_NOWSTOPPING_X_CRD,MUSIC_NOWSTOPPING_Y_CRD);
-mlcd.displayJpgImageCoordinate(COMMON_BUTTON_STOP_IMG_PATH,COMMON_BUTTON_STOP_X_CRD,COMMON_BUTTON_STOP_Y_CRD);       
+    mlcd.displayJpgImageCoordinate(MUSIC_NOWPLAYING_IMG_PATH,MUSIC_NOWSTOPPING_X_CRD,MUSIC_NOWSTOPPING_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_STOP_IMG_PATH,COMMON_BUTTON_STOP_X_CRD,COMMON_BUTTON_STOP_Y_CRD);       
 }
 
 void AppControl::displayMeasureInit()
@@ -215,10 +269,10 @@ void AppControl::displayMeasureDistance()
 
 void AppControl::displayDateInit()
 {
-  mlcd.displayJpgImageCoordinate(DATE_NOTICE_IMG_PATH,DATE_NOTICE_X_CRD,DATE_NOTICE_Y_CRD);
-  mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,DATE_SLASH_X_CRD,DATE_SLASH_Y_CRD);
-  mlcd.displayJpgImageCoordinate(DATE_COLON_IMG_PATH,DATE_COLON_X_CRD,DATE_COLON_Y_CRD);
-  mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
+    mlcd.displayJpgImageCoordinate(DATE_NOTICE_IMG_PATH,DATE_NOTICE_X_CRD,DATE_NOTICE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,DATE_SLASH_X_CRD,DATE_SLASH_Y_CRD);
+    mlcd.displayJpgImageCoordinate(DATE_COLON_IMG_PATH,DATE_COLON_X_CRD,DATE_COLON_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
    
 }
 
@@ -240,82 +294,81 @@ void AppControl::controlApplication()
     mmplay.init();
     while (1) {//while(1)によりtrueになっているので無限ループになる
 
-        switch (getState()) {
+    switch (getState()) {
         case TITLE:
-            switch (getAction()) {
-            case ENTRY:
+        switch (getAction()) {
+        case ENTRY:
                 /*
                 ** まずはここにタイトル画面の表示処理を呼び出してみよう。
                 ** タイトル画面表示の関数はdisplayTitleInit()である。
                 ** この関数の中身はまだ何もないので、この関数にタイトル画面表示処理を書いてみよう。
                 */ 
-                displayTitleInit();//タイトル画面の呼び出し
-                setStateMachine(TITLE,DO);
-                 if (m_flag_btnA_is_pressed || m_flag_btnB_is_pressed || m_flag_btnC_is_pressed) { //ボタンを押した際にMENU画面に移行
-                    mlcd.fillBackgroundWhite();	
-                    setStateMachine(MENU,ENTRY);
-                     setBtnAllFlgFalse();//これがないとボタンが押しっぱなしの状態
-                }
+            displayTitleInit();//タイトル画面の呼び出し
+            setStateMachine(TITLE,DO);
             break;
 
 
-            case DO:
-                setStateMachine(TITLE,EXIT);
+        case DO:
+            setStateMachine(TITLE,EXIT);
             break;
 
-            case EXIT:
-                setStateMachine(TITLE,ENTRY);
+        case EXIT:
+            setStateMachine(TITLE,ENTRY);
+            if (m_flag_btnA_is_pressed || m_flag_btnB_is_pressed || m_flag_btnC_is_pressed) { //ボタンを押した際にMENU画面に移行
+            mlcd.fillBackgroundWhite();	
+            setStateMachine(MENU,ENTRY);
+            setBtnAllFlgFalse();//これがないとボタンが押しっぱなしの状態
+            }
             break;
 
             default:
-                break;
+            break;
             }
 
             break;
 
 
 
+//ここからMENUの始まり
         case MENU:
-          switch (getAction()) {
+        switch (getAction()) {
             
             case ENTRY:
-               mlcd.fillBackgroundWhite();	
-               displayMenuInit();//メニュー画面の呼び出し
-               
-                setStateMachine(MENU,DO);
+            mlcd.fillBackgroundWhite();	
+            displayMenuInit();//メニュー画面の呼び出し
+            setStateMachine(MENU,DO);
             break;
 
-
-//ここからMENUのDOの始まり
+//DO
             case DO:
-     if(m_flag_btnC_is_pressed){
-             setBtnAllFlgFalse();
+            if(m_flag_btnC_is_pressed){
+            setBtnAllFlgFalse();
            
                     
-     switch(getFocusState()){       //初期状態ではFocusState m_focus_state = MENU_WBGT;の中身が入ってくる。
+        switch(getFocusState()){       //初期状態ではFocusState m_focus_state = MENU_WBGT;の中身が入ってくる。
                      
-                     case MENU_WBGT:  
-                     focusChangeImg( MENU_WBGT,MENU_MUSIC);
-                     setFocusState(MENU_MUSIC);  
-                     break; 
+            case MENU_WBGT:  
+            focusChangeImg( MENU_WBGT,MENU_MUSIC);
+            setFocusState(MENU_MUSIC);  
+            break; 
                   
 
-                     case MENU_MUSIC:                 
-                     focusChangeImg(MENU_MUSIC,MENU_MEASURE);
-                     setFocusState(MENU_MEASURE); 
-                     break;
+            case MENU_MUSIC:                 
+            focusChangeImg(MENU_MUSIC,MENU_MEASURE);
+            setFocusState(MENU_MEASURE); 
+            break;
                     
-                     case MENU_MEASURE: 
-                     focusChangeImg(MENU_MEASURE,MENU_DATE);
-                     setFocusState(MENU_DATE);       
-                     break;
+            case MENU_MEASURE: 
+            focusChangeImg(MENU_MEASURE,MENU_DATE);
+            setFocusState(MENU_DATE);       
+            break;
                      
-                     case MENU_DATE:  
-                     focusChangeImg(MENU_DATE,MENU_WBGT);
-                     setFocusState(MENU_WBGT);       
-                     break;               
-                     }         
-                }  
+            case MENU_DATE:  
+            focusChangeImg(MENU_DATE,MENU_WBGT);
+            setFocusState(MENU_WBGT);       
+            break;               
+            }         
+        }  
 
 
 
@@ -323,34 +376,34 @@ void AppControl::controlApplication()
              setBtnAllFlgFalse();
            
                     
-     switch(getFocusState()){       //   FocusState m_focus_state = MENU_WBGT;の中身が入ってくる。
+        switch(getFocusState()){       //   FocusState m_focus_state = MENU_WBGT;の中身が入ってくる。
                      
-                     case MENU_WBGT: 
-                     focusChangeImg( MENU_WBGT,MENU_DATE);
-                     setFocusState(MENU_DATE);  
-                     break; 
+            case MENU_WBGT: 
+            focusChangeImg( MENU_WBGT,MENU_DATE);
+            setFocusState(MENU_DATE);  
+            break; 
                   
 
-                     case MENU_DATE:                 
-                     focusChangeImg(MENU_DATE,MENU_MEASURE);
-                     setFocusState(MENU_MEASURE); 
-                     break;
+            case MENU_DATE:                 
+            focusChangeImg(MENU_DATE,MENU_MEASURE);
+            setFocusState(MENU_MEASURE); 
+            break;
                     
-                     case MENU_MEASURE: 
-                     focusChangeImg( MENU_MEASURE,MENU_MUSIC);
-                     setFocusState(MENU_MUSIC);       
-                     break;
+            case MENU_MEASURE: 
+            focusChangeImg( MENU_MEASURE,MENU_MUSIC);
+            setFocusState(MENU_MUSIC);       
+            break;
                      
-                     case MENU_MUSIC:     
-                     focusChangeImg(MENU_MUSIC,MENU_WBGT);
-                     setFocusState(MENU_WBGT);       
-                     break;               
-                     }         
-                }  
+            case MENU_MUSIC:     
+            focusChangeImg(MENU_MUSIC,MENU_WBGT);
+            setFocusState(MENU_WBGT);       
+            break;               
+            }         
+        }  
 
             if(m_flag_btnB_is_pressed==true){ 
-               setStateMachine(MENU,EXIT);      
-                } 
+            setStateMachine(MENU,EXIT);      
+            } 
             break;
 //ここまでがMENUのDOの中身
 
@@ -363,24 +416,24 @@ void AppControl::controlApplication()
                     
      switch(getFocusState()){       //   FocusState m_focus_state = MENU_WBGT;の中身が入ってくる。
                      
-                     case MENU_WBGT: 
-                    setStateMachine(WBGT,ENTRY);    
-                     break; 
+            case MENU_WBGT: 
+            setStateMachine(WBGT,ENTRY);    
+            break; 
                   
-                     case MENU_MUSIC:                 
-                     setStateMachine(MUSIC_STOP,ENTRY);    
-                     break;
+            case MENU_MUSIC:                 
+            setStateMachine(MUSIC_STOP,ENTRY);    
+            break;
                     
-                     case MENU_MEASURE: 
-                     setStateMachine(MEASURE,ENTRY);       
-                     break;
+            case MENU_MEASURE: 
+            setStateMachine(MEASURE,ENTRY);       
+            break;
                      
-                     case MENU_DATE:     
-                     setStateMachine(DATE,ENTRY);       
-                     break;               
-                     }         
-                }  
-                break;
+            case MENU_DATE:     
+            setStateMachine(DATE,ENTRY);       
+            break;               
+            }         
+            }  
+            break;
             }
             break;
 //case MENUの処理の終わり
@@ -396,25 +449,24 @@ void AppControl::controlApplication()
             case ENTRY:
             mlcd.fillBackgroundWhite();
             displayWBGTInit();
-            
             setStateMachine(WBGT,DO); 
             break;
 
             case DO:
-            //displayTempHumiIndex();
             displayTempHumiIndex();
             setStateMachine(WBGT,EXIT);
             break;
 
             case EXIT:
-             displayTempHumiIndex();
+            setStateMachine(WBGT,DO);
             if(m_flag_btnB_is_pressed){
             setStateMachine(MENU,ENTRY); 
             setBtnAllFlgFalse();
-                }  
-                break;
+            }  
+            break;
+            
             default:
-                break;
+            break;
             }
             break;
 //熱中症処理の終わり
@@ -425,130 +477,115 @@ void AppControl::controlApplication()
 
 
 
-
-        case MUSIC_STOP:
-            switch (getAction()) {
+//音楽停止画面の始まり
+    case MUSIC_STOP:
+        switch (getAction()) {
             case ENTRY:
-             setBtnAllFlgFalse();
-             mlcd.fillBackgroundWhite();	  
-             displayMusicInit();
-             setStateMachine(MUSIC_STOP,DO); 
-                break;
-
-            case DO:
-            setStateMachine(MUSIC_STOP,EXIT);
-                break;
-
-            case EXIT:
-             if(m_flag_btnB_is_pressed){
-                setBtnAllFlgFalse();
-            setStateMachine(MENU,ENTRY); 
-                }
-
-            else if(m_flag_btnA_is_pressed){
-                setBtnAllFlgFalse();
-                  mlcd.fillBackgroundWhite();	
-            setStateMachine(MUSIC_PLAY,ENTRY); 
-                Serial.println("1");
-                }  
-
-             if(m_flag_btnC_is_pressed){
-                setBtnAllFlgFalse();
-                mmplay.init();
-                mmplay.selectNextMusic();	
-                 mmplay.prepareMP3();		
-Serial.println("jjjjjjjjj");
-            setStateMachine(MUSIC_STOP,ENTRY); 
-                }
-
-
-                break;
-Serial.println("2");
-            default:
-            
-                break;
-            }
-
+            mmplay.init();
+            setBtnAllFlgFalse();
+            mlcd.fillBackgroundWhite();	  
+            displayMusicInit();
+            setStateMachine(MUSIC_STOP,DO); 
             break;
 
+            case DO:	
+            displayMusicTitle();
+            setStateMachine(MUSIC_STOP,EXIT);
+            break;
+
+            case EXIT:
+            if(m_flag_btnB_is_pressed){
+            setBtnAllFlgFalse();
+            setStateMachine(MENU,ENTRY); 
+            }
+
+            else if(m_flag_btnA_is_pressed){
+            setBtnAllFlgFalse();
+            mlcd.fillBackgroundWhite();	
+            setStateMachine(MUSIC_PLAY,ENTRY); 
+            }  
+
+            if(m_flag_btnC_is_pressed){
+            setBtnAllFlgFalse();
+            displayNextMusic();
+            setStateMachine(MUSIC_STOP,DO); 
+            }
+            break;
+            default:
+            break;
+            }
+            break;
+//音楽停止画面の終わり
+
+
+
+//音楽再生画面の始まり
         case MUSIC_PLAY:
 
             switch (getAction()) {
             case ENTRY:
-              setBtnAllFlgFalse();
-                 displayMusicPlay();
-              Serial.println("a");
-             mmplay.init();
-            // char entry =mmplay.getTitle();
-             mmplay.prepareMP3();
-             setStateMachine(MUSIC_PLAY,DO); 
+            setBtnAllFlgFalse();
+            displayMusicPlay();
+            mmplay.prepareMP3();
+            setStateMachine(MUSIC_PLAY,DO); 
              //setStateMachine(MUSIC_PLAY,ENTRY);
-              break;
+            break;
 
             case DO:
             mmplay.playMP3();
             setStateMachine(MUSIC_PLAY,DO);
-
-                setStateMachine(MUSIC_PLAY,DO);
-              if(m_flag_btnA_is_pressed){
-                Serial.println("b");
-                 setBtnAllFlgFalse();
-               setStateMachine(MUSIC_PLAY,EXIT); 
-                } 
-              
-               
+            if(m_flag_btnA_is_pressed){
+            setBtnAllFlgFalse();
+            mmplay.stopMP3();
+            setStateMachine(MUSIC_PLAY,EXIT); 
+            } 
             break;
 
             case EXIT:
-          
             setBtnAllFlgFalse();
             setStateMachine(MUSIC_STOP,ENTRY); 
-                 
-            
+            break;
 
-                break;
-
-           default:
-               
-                break;
+            default:
+            break;
             }
 
             break;
+//音楽再生画面の終わり
 
 
 
 
-
-
+//距離測定の始まり
         case MEASURE:
 
             switch (getAction()) {
             case ENTRY:
             mlcd.fillBackgroundWhite();	
-             displayMeasureInit();
-            
-            // drthsensor.measureReturnTime();
+            displayMeasureInit();   
        
             setStateMachine(MEASURE,DO); 
-                break;
+            break;
 
             case DO:
-            
+        
             setStateMachine(MEASURE,EXIT);
                 break;
 
             case EXIT:
-             if(m_flag_btnB_is_pressed){
-                 setBtnAllFlgFalse(); 
+            if(m_flag_btnB_is_pressed){
+            setBtnAllFlgFalse(); 
             setStateMachine(MENU,ENTRY);
-                } 
-                break;
+            } 
+            break;
 
             default:
-                break;
-            }
-
             break;
+            }
+            break;
+//距離測定の終わり
+
+
 
 //時刻表示処理始まり
     case DATE:
@@ -563,19 +600,24 @@ Serial.println("2");
             case DO:
             displayDateUpdate();
             setStateMachine(DATE,EXIT);
-           
             break;
 
             case EXIT:
+            //setStateMachine(DATE,DO);
             if(m_flag_btnB_is_pressed){
-                 setBtnAllFlgFalse(); 
+            setBtnAllFlgFalse(); 
             setStateMachine(MENU,ENTRY);
-                }  
-                break;
+            }  
+            break;
+            
             default:
-                break;
+            break;
             }
             break;
+
+
         }
+       
     }
+
 }

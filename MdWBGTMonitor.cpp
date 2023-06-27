@@ -17,27 +17,20 @@ dthsen.getTempHumi(temperature,humidity);
 int calc_index = 0.68 * (*temperature) + 0.12 * (*humidity);
         if (calc_index <= 15) {
             *index = SAFE;
-         
-            Serial.println("a");
         }
         else if (calc_index <= 24) {
             *index = ATTENTION;
-                Serial.println("b");
         }
         else if (calc_index <= 27) {
             *index = ALERT;
-            
-                Serial.println("c");
         }
         else if (calc_index <= 30) {
             *index = HIGH_ALERT;
-                Serial.println("d");
         }
         else {
             *index = DANGER;
-                Serial.println("e");
         }
-   
 
-     Serial.println(calc_index);
+
+    
 }
