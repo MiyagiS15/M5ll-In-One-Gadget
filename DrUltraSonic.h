@@ -10,5 +10,6 @@ int m_trig_pin;
 
 public: // publicはどこからでもアクセス可能
 DrUltraSonic(int echo_pin, int trig_pin);
+
 double measureReturnTime();
 };

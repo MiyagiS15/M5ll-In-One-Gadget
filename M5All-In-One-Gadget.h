@@ -169,20 +169,32 @@
 // Measure jpg image coordinate
 #define MEASURE_NOTICE_X_CRD 0
 #define MEASURE_NOTICE_Y_CRD 0
-#define COMMON_BUTTON_X_CRD 120
-#define COMMON_BUTTON_Y_CRD 200
+#define MEASURE_DIGIT3_X_CRD 10
+#define MEASURE_DIGIT3_Y_CRD 100
+#define MEASURE_DIGIT2_X_CRD 53
+#define MEASURE_DIGIT2_Y_CRD 100
+#define MEASURE_DIGIT1_X_CRD 96
+#define MEASURE_DIGIT1_Y_CRD 100
+#define MEASURE_DOT_X_CRD 139
+#define MEASURE_DOT_Y_CRD 100
+#define MEASURE_DECIMAL_X_CRD 182
+#define MEASURE_DECIMAL_Y_CRD 100
+#define MEASURE_CM_X_CRD 240
+#define MEASURE_CM_Y_CRD 100
+#define MEASURE_BACK_X_CRD 120
+#define MEASURE_BACK_Y_CRD 200
 
 
 
 // Date jpg image coordinate
 #define DATE_NOTICE_X_CRD 0
 #define DATE_NOTICE_Y_CRD 0
-#define DATE_SLASH_X_CRD 125
-#define DATE_SLASH_Y_CRD 90
-#define DATE_COLON_X_CRD 40
-#define DATE_COLON_Y_CRD 150
-#define COMMON_BUTTON_X_CRD 120
-#define COMMON_BUTTON_Y_CRD 200
+#define DATE_YYYYMMDD_X_CRD 10
+#define DATE_YYYYMMDD_Y_CRD 100
+#define DATE_HHmmSS_X_CRD 40
+#define DATE_HHmmSS_Y_CRD 150
+#define DATE_BACK_X_CRD 120
+#define DATE_BACK_Y_CRD 200
 
 
 
@@ -196,7 +208,8 @@ typedef enum {
     MUSIC_STOP,
     MUSIC_PLAY,
     MEASURE,
-    DATE
+    DATE,
+    HIGHLOW
 } State;
 
 typedef enum {

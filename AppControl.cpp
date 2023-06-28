@@ -258,34 +258,61 @@ void AppControl::displayMusicPlay()
 
 void AppControl::displayMeasureInit()
 {   
-    mlcd.displayJpgImageCoordinate(MEASURE_NOTICE_IMG_PATH,MEASURE_NOTICE_X_CRD,MEASURE_NOTICE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
-
+   mlcd.clearDisplay();
+    mlcd.fillBackgroundWhite();
+    mlcd.displayJpgImageCoordinate(MEASURE_NOTICE_IMG_PATH, MEASURE_NOTICE_X_CRD, MEASURE_NOTICE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MEASURE_CM_IMG_PATH, MEASURE_CM_X_CRD, MEASURE_CM_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH, MEASURE_BACK_X_CRD, MEASURE_BACK_Y_CRD);
+    displayMeasureDistance();
 }
 
 void AppControl::displayMeasureDistance()
 {
+   double dist = mmdist.getDistance();
+    Serial.println(dist);
+    if (dist >= 400 || dist < 0) {
+        return;
+    }
+
+    int digit3 = (int)dist / 100;
+    int digit2 = ((int)dist / 10) % 10;
+    int digit1 = (int)dist % 10;
+    int decimal = (int)(dist * 10) % 10;
+
+    if (digit3 == 0) {
+        mlcd.displayJpgImageCoordinate(COMMON_BLUEFILLWHITE_IMG_PATH, MEASURE_DIGIT3_X_CRD, MEASURE_DIGIT3_Y_CRD);
+    } else {
+        mlcd.displayJpgImageCoordinate(g_str_blue[digit3], MEASURE_DIGIT3_X_CRD, MEASURE_DIGIT3_Y_CRD);
+    }
+
+    if (digit2 == 0 && dist < 10) {
+        mlcd.displayJpgImageCoordinate(COMMON_BLUEFILLWHITE_IMG_PATH, MEASURE_DIGIT2_X_CRD, MEASURE_DIGIT2_Y_CRD);
+    } else {
+        mlcd.displayJpgImageCoordinate(g_str_blue[digit2], MEASURE_DIGIT2_X_CRD, MEASURE_DIGIT2_Y_CRD);
+    }
+
+    mlcd.displayJpgImageCoordinate(g_str_blue[digit1], MEASURE_DIGIT1_X_CRD, MEASURE_DIGIT1_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BLUEDOT_IMG_PATH, MEASURE_DOT_X_CRD, MEASURE_DOT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(g_str_blue[decimal], MEASURE_DECIMAL_X_CRD, MEASURE_DECIMAL_Y_CRD);
+    
 }
 
 void AppControl::displayDateInit()
 {
-    mlcd.displayJpgImageCoordinate(DATE_NOTICE_IMG_PATH,DATE_NOTICE_X_CRD,DATE_NOTICE_Y_CRD);
-    mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,DATE_SLASH_X_CRD,DATE_SLASH_Y_CRD);
-    mlcd.displayJpgImageCoordinate(DATE_COLON_IMG_PATH,DATE_COLON_X_CRD,DATE_COLON_Y_CRD);
-    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH,COMMON_BUTTON_X_CRD,COMMON_BUTTON_Y_CRD);
+    mlcd.clearDisplay();
+    mlcd.fillBackgroundWhite();
+
+    mlcd.displayJpgImageCoordinate(DATE_NOTICE_IMG_PATH, DATE_NOTICE_X_CRD, DATE_NOTICE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH, DATE_BACK_X_CRD, DATE_BACK_Y_CRD);
+
+    displayDateUpdate();
    
 }
 
 void AppControl::displayDateUpdate()
 {   
-    String date = mdtime.readDate();
-    String time = mdtime.readTime();
-    mlcd.displayDateText(date,10, 100);	
-    mlcd.displayDateText(time,40,150);	
-    mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,125,95);
-    mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH,215,95);
-    mlcd.displayJpgImageCoordinate(DATE_COLON_IMG_PATH,95,140);
-    mlcd.displayJpgImageCoordinate(DATE_COLON_IMG_PATH,185,140);   
+  mlcd.displayDateText(mdtime.readDate(), DATE_YYYYMMDD_X_CRD, DATE_YYYYMMDD_Y_CRD);
+    mlcd.displayDateText(mdtime.readTime(), DATE_HHmmSS_X_CRD, DATE_HHmmSS_Y_CRD);
 }
 
 void AppControl::controlApplication()
@@ -404,6 +431,8 @@ void AppControl::controlApplication()
             if(m_flag_btnB_is_pressed==true){ 
             setStateMachine(MENU,EXIT);      
             } 
+
+   
             break;
 //ここまでがMENUのDOの中身
 
@@ -433,7 +462,9 @@ void AppControl::controlApplication()
             break;               
             }         
             }  
+
             break;
+            
             }
             break;
 //case MENUの処理の終わり
@@ -481,10 +512,10 @@ void AppControl::controlApplication()
     case MUSIC_STOP:
         switch (getAction()) {
             case ENTRY:
-            mmplay.init();
             setBtnAllFlgFalse();
-            mlcd.fillBackgroundWhite();	  
-            displayMusicInit();
+            mlcd.fillBackgroundWhite();	//画面白にリセット  
+            displayMusicInit();//初期画面の呼び出し
+            mmplay.init();//音楽プレーヤーの初期化
             setStateMachine(MUSIC_STOP,DO); 
             break;
 
@@ -508,6 +539,8 @@ void AppControl::controlApplication()
             if(m_flag_btnC_is_pressed){
             setBtnAllFlgFalse();
             displayNextMusic();
+             mlcd.fillBackgroundWhite();
+            displayMusicInit();//初期画面の呼び出し
             setStateMachine(MUSIC_STOP,DO); 
             }
             break;
@@ -557,31 +590,31 @@ void AppControl::controlApplication()
 
 
 //距離測定の始まり
-        case MEASURE:
+          case MEASURE:
 
             switch (getAction()) {
             case ENTRY:
-            mlcd.fillBackgroundWhite();	
-            displayMeasureInit();   
-       
-            setStateMachine(MEASURE,DO); 
-            break;
+                displayMeasureInit();
+                setStateMachine(MEASURE, DO);
+                break;
 
             case DO:
-        
-            setStateMachine(MEASURE,EXIT);
+                delay(250);
+                displayMeasureDistance();
+                if (m_flag_btnB_is_pressed) {
+                    setStateMachine(MEASURE, EXIT);
+                }
                 break;
 
             case EXIT:
-            if(m_flag_btnB_is_pressed){
-            setBtnAllFlgFalse(); 
-            setStateMachine(MENU,ENTRY);
-            } 
-            break;
+                setStateMachine(MENU, ENTRY);
+                setBtnAllFlgFalse();
+                break;
 
             default:
-            break;
+                break;
             }
+
             break;
 //距離測定の終わり
 
@@ -589,30 +622,46 @@ void AppControl::controlApplication()
 
 //時刻表示処理始まり
     case DATE:
-        switch (getAction()) {
-            
+         switch (getAction()) {
             case ENTRY:
-            mlcd.fillBackgroundWhite();	  
-            displayDateInit();
-            setStateMachine(DATE,DO); 
-            break;
+                displayDateInit();
+                setStateMachine(DATE, DO);
+                break;
 
             case DO:
-            displayDateUpdate();
-            setStateMachine(DATE,EXIT);
-            break;
+                displayDateUpdate();
+                delay(100);
+                if (m_flag_btnB_is_pressed) {
+                    setStateMachine(DATE, EXIT);
+                }
+                break;
 
             case EXIT:
-            //setStateMachine(DATE,DO);
-            if(m_flag_btnB_is_pressed){
-            setBtnAllFlgFalse(); 
-            setStateMachine(MENU,ENTRY);
-            }  
-            break;
-            
+                setStateMachine(MENU, ENTRY);
+                setBtnAllFlgFalse();
+                break;
+
             default:
-            break;
+                break;
             }
+
+            break;
+//時刻表示終わり
+    
+
+    case HIGHLOW:
+    switch (getAction()) {
+          
+          case ENTRY:
+          break;
+
+          case DO:
+          break;
+
+          case EXIT:
+          break;
+          
+          }
             break;
 
 

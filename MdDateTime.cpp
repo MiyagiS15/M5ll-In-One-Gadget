@@ -8,7 +8,6 @@ MdDateTime::MdDateTime()
 
 String MdDateTime::readDate()
 {
-    int i = 0;
     char c = 0;
     while (Serial2.available() > 0) {
         c = Serial2.read();
@@ -22,7 +21,6 @@ String MdDateTime::readDate()
 
 String MdDateTime::readTime()
 {
-    int i = 0;
     char c = 0;
     while (Serial2.available() > 0) {
         c = Serial2.read();
